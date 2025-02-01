@@ -55,8 +55,14 @@ export const useExpensesStore = create<ExpensesState>((set) => ({
     try {
       const response = await axios.put("/api/expenses/update", updatedData)
       if(response.data.success){
-        
+         // Update the local profile state with the new data
+        set((state) => ({
+          expenses: state.expenses ? {...state.expenses, ...updatedData} : null,
+          expensesLoading: false
+        }))
+        return true;
       }
+      throw new Error(response.data.message)
     } catch (error) {
       
     }
