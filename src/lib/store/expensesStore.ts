@@ -52,5 +52,13 @@ export const useExpensesStore = create<ExpensesState>((set) => ({
 
   updateExpenses: async (updatedData) => {
     set({ expensesLoading: true, expensesError: null });
+    try {
+      const response = await axios.put("/api/expenses/update", updatedData)
+      if(response.data.success){
+        
+      }
+    } catch (error) {
+      
+    }
   },
 }));
