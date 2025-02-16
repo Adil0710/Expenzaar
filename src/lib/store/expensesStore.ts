@@ -24,7 +24,7 @@ interface Expenses {
 interface ExpensesState {
   expenses: Expenses | null;
   expensesLoading: boolean;
-  expensesError: boolean;
+  expensesError: string | null;
   fetchExpenses: () => Promise<void>;
   updateExpenses: (updatedData: Partial<Expenses>) => Promise<boolean>;
 }
@@ -35,6 +35,17 @@ export const useExpensesStore = create<ExpensesState>((set) => ({
   expensesError: null,
 
   fetchExpenses: async () => {
-    set({expensesLoading: true, expensesError})
+    set({expensesLoading: true, expensesError: null});
+
+    try {
+        const response = await axios.get("api/expenses");
+        set({expenses: response.data, expensesLoading: false})
+         // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+        set({
+            expensesError: error.response?.data?.message || "Failed to load expenses",
+            expensesLoading: false
+        })
+    }
   }
 }));
