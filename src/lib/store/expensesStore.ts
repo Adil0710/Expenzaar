@@ -33,4 +33,8 @@ export const useExpensesStore = create<ExpensesState>((set) => ({
   expenses: null,
   expensesLoading: false,
   expensesError: null,
+
+  fetchExpenses: async () => {
+    set({expensesLoading: true, expensesError})
+  }
 }));
