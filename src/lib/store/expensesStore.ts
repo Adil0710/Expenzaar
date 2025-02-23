@@ -28,3 +28,9 @@ interface ExpensesState {
   fetchExpenses: () => Promise<void>;
   updateExpenses: (updatedData: Partial<Expenses>) => Promise<boolean>;
 }
+
+export const useExpensesStore = create<ExpensesState>((set) => ({
+  expenses: null,
+  expensesLoading: false,
+  expensesError: null,
+}));
