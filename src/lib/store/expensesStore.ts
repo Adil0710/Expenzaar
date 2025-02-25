@@ -24,4 +24,6 @@ interface Expenses {
 interface ExpensesState {
   expenses: Expenses | null;
   expensesLoading: boolean;
+  expensesError: boolean;
+  
 }
