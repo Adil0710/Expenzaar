@@ -25,5 +25,5 @@ interface ExpensesState {
   expenses: Expenses | null;
   expensesLoading: boolean;
   expensesError: boolean;
-  
+  fetchExpenses: () => Promise<void>
 }
