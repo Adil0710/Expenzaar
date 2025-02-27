@@ -25,5 +25,6 @@ interface ExpensesState {
   expenses: Expenses | null;
   expensesLoading: boolean;
   expensesError: boolean;
-  fetchExpenses: () => Promise<void>
+  fetchExpenses: () => Promise<void>;
+  updateExpenses: (updatedData: Partial<Expenses>) => Promise<boolean>;
 }
