@@ -21,3 +21,7 @@ interface Expenses {
         }
     ]
 }
+
+interface ExpensesState {
+    expense : Expenses | null,
+}
