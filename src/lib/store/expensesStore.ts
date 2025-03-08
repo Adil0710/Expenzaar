@@ -12,7 +12,12 @@ interface Expenses {
             isOverLimit: boolean,
             description: string,
             createdAt: string,
-            updatedAt: string
+            updatedAt: string,
+            category:{
+                name: string,
+                limit: number
+            },
+            totalSpent: number
         }
     ]
 }
