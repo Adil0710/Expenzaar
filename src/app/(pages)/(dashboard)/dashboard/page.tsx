@@ -14,7 +14,7 @@ export default function Dashboard() {
     }
   }, []);
 
-  const salary = profile?.user.salary
+  const salary = profile?.user.salary;
   return (
     <div>
       <DashboardCard profileLoading={profileLoading} salary={salary} />

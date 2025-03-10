@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {  useState } from "react";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 import { Skeleton } from "@/components/ui/skeleton";
@@ -49,7 +49,7 @@ export default function DashboardCard({ salary, profileLoading }: CardProps) {
             <CardHeader className="relative">
               <CardDescription>Total Salary / Budget</CardDescription>
               <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
-                ₹  {salary}
+                ₹ {salary}
               </CardTitle>
               <div className="absolute right-4 top-5">
                 <Badge
@@ -86,9 +86,16 @@ export default function DashboardCard({ salary, profileLoading }: CardProps) {
               <div className="absolute right-4 top-5">
                 <Badge
                   variant="outline"
-                  className="flex gap-1 rounded-lg text-xs"
+                  className={cn(
+                    "flex gap-1 rounded-lg text-xs bg-success",
+                    state && "bg-danger"
+                  )}
                 >
-                  <TrendingDownIcon className="size-3" />
+                  {state ? (
+                    <TrendingDownIcon className="size-3" />
+                  ) : (
+                    <TrendingUpIcon className="size-3" />
+                  )}
                   -20%
                 </Badge>
               </div>
@@ -111,9 +118,16 @@ export default function DashboardCard({ salary, profileLoading }: CardProps) {
               <div className="absolute right-4 top-5">
                 <Badge
                   variant="outline"
-                  className="flex gap-1 rounded-lg text-xs"
+                  className={cn(
+                    "flex gap-1 rounded-lg text-xs bg-success",
+                    state && "bg-danger"
+                  )}
                 >
-                  <TrendingUpIcon className="size-3" />
+                  {state ? (
+                    <TrendingDownIcon className="size-3" />
+                  ) : (
+                    <TrendingUpIcon className="size-3" />
+                  )}
                   +12.5%
                 </Badge>
               </div>
@@ -136,9 +150,16 @@ export default function DashboardCard({ salary, profileLoading }: CardProps) {
               <div className="absolute right-4 top-5">
                 <Badge
                   variant="outline"
-                  className="flex gap-1 rounded-lg text-xs"
+                  className={cn(
+                    "flex gap-1 rounded-lg text-xs bg-success",
+                    state && "bg-danger"
+                  )}
                 >
-                  <TrendingUpIcon className="size-3" />
+                  {state ? (
+                    <TrendingDownIcon className="size-3" />
+                  ) : (
+                    <TrendingUpIcon className="size-3" />
+                  )}
                   +4.5%
                 </Badge>
               </div>
