@@ -20,34 +20,27 @@ export async function GET(req: Request) {
       );
     }
 
-    const expenses = await prisma.expense.findMany({
-      where: { userId: decoded.id }, // Ensure only the logged-in user's data is fetched
-      include: {
-        category: {
-          select: {
-            name: true,
-            limit: true,
-          },
-        },
+    const categories = await prisma.category.findMany({
+      where: { userId: decoded.id },
+      select: {
+        id: true,
+        name: true,
+        limit: true,
       },
-      orderBy: { createdAt: "desc" }, // Latest expenses first for better UX
     });
 
-    if (!expenses.length) {
+    if (!categories.length) {
       return NextResponse.json(
-        { success: false, message: "No expenses found" },
+        { success: false, message: "No categories found" },
         { status: 404 }
       );
     }
 
-    return NextResponse.json(
-      { success: true, expenses },
-      { status: 200 }
-    );
+    return NextResponse.json({ success: true, categories }, { status: 200 });
   } catch (error) {
-    console.error("Error fetching expenses:", error);
+    console.error("Error fetching categories:", error);
     return NextResponse.json(
-      { success: false, message: "Error fetching expenses" },
+      { success: false, message: "Error fetching categories" },
       { status: 500 }
     );
   }
