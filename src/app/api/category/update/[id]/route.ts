@@ -49,7 +49,7 @@ export async function PUT(
     const { name, limit } = await req.json();
 
     // Prepare updated data object
-    // disable-eslint-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updateData: Record<string, any> = {};
     if (name) updateData.name = name;
     if (limit) updateData.limit = limit;
