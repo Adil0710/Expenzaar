@@ -23,7 +23,8 @@ export async function PUT(
       );
     }
 
-    const categoryId = params.id;
+    const resolvedParams = await params;
+    const categoryId = resolvedParams.id;
     if (!categoryId) {
       return NextResponse.json(
         { success: false, message: "Category ID is required" },
@@ -48,6 +49,7 @@ export async function PUT(
     const { name, limit } = await req.json();
 
     // Prepare updated data object
+    // disable-eslint-next-line @typescript-eslint/no-explicit-any
     const updateData: Record<string, any> = {};
     if (name) updateData.name = name;
     if (limit) updateData.limit = limit;
@@ -58,7 +60,11 @@ export async function PUT(
     });
 
     return NextResponse.json(
-      { success: true, message: "Category updated successfully", updatedCategory },
+      {
+        success: true,
+        message: "Category updated successfully",
+        updatedCategory,
+      },
       { status: 200 }
     );
   } catch (error) {
