@@ -23,8 +23,7 @@ export async function DELETE(
         { status: 401 }
       );
     }
-    const resolvedParams = await params;
-    const categoryId = res.id;
+    const categoryId = params.id;
 
     if (!categoryId) {
       return NextResponse.json(
