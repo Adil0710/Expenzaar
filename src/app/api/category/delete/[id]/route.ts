@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { verifyToken } from "@/app/lib/auth";
 import prisma from "@/app/lib/prisma";
 
 export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { id: string } }
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const token = req.headers.get("authorization")?.split(" ")[1];
