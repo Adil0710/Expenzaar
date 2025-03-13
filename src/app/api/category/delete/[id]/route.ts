@@ -2,9 +2,13 @@ import { NextResponse } from "next/server";
 import { verifyToken } from "@/app/lib/auth";
 import prisma from "@/app/lib/prisma";
 
-export async function POST(req: Request) {
+export async function DELETE(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
   try {
     const token = req.headers.get("authorization")?.split(" ")[1];
+
     if (!token) {
       return NextResponse.json(
         { success: false, message: "Unauthorized" },
@@ -20,15 +24,16 @@ export async function POST(req: Request) {
       );
     }
 
-    const { amount, categoryId, description } = await req.json();
+    const categoryId = params.id;
 
-    if (!amount || !categoryId) {
+    if (!categoryId) {
       return NextResponse.json(
-        { success: false, message: "Amount and category ID are required" },
+        { success: false, message: "Category ID is required" },
         { status: 400 }
       );
     }
 
+    // Check if category exists and belongs to the logged-in user
     const category = await prisma.category.findFirst({
       where: {
         id: categoryId,
@@ -43,39 +48,25 @@ export async function POST(req: Request) {
       );
     }
 
-    const totalSpent = await prisma.expense.aggregate({
-      where: { categoryId, userId: decoded.id },
-      _sum: { amount: true },
+    // Delete the category
+    await prisma.category.delete({
+      where: { id: categoryId },
     });
 
-    const categoryLimit = Number(category.limit);   // Type conversion
-    const totalAmountSpent = Number(totalSpent._sum.amount) || 0;
-    const amountToAdd = Number(amount);
-
- 
-
-    const isOverLimit = categoryLimit
-      ? totalAmountSpent + amountToAdd > categoryLimit
-      : false;
-
-    const newExpense = await prisma.expense.create({
-      data: {
-        userId: decoded.id,
-        categoryId,
-        amount,
-        description,
-        isOverLimit,
-      },
+    const categories = await prisma.category.findMany({
+      where: { userId: decoded.id },
+      select: { id: true, name: true, limit: true },
+      orderBy: { name: "asc" },
     });
 
     return NextResponse.json(
-      { success: true, newExpense, message: "Expense added successfully" },
-      { status: 201 }
+      { success: true, message: "Category deleted successfully", categories },
+      { status: 200 }
     );
   } catch (error) {
-    console.error("Error adding expense:", error);
+    console.error("Error deleting category:", error);
     return NextResponse.json(
-      { success: false, message: "Error adding expense" },
+      { success: false, message: "Error deleting category" },
       { status: 500 }
     );
   }

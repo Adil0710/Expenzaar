@@ -27,6 +27,7 @@ export async function GET(req: Request) {
         name: true,
         limit: true,
       },
+      orderBy: { name: "asc" }, // Sorted by name for better UX
     });
 
     if (!categories.length) {

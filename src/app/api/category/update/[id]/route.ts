@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 import { verifyToken } from "@/app/lib/auth";
 import prisma from "@/app/lib/prisma";
 
-export async function POST(req: Request) {
+export async function PUT(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
   try {
     const token = req.headers.get("authorization")?.split(" ")[1];
     if (!token) {
@@ -20,11 +23,10 @@ export async function POST(req: Request) {
       );
     }
 
-    const { amount, categoryId, description } = await req.json();
-
-    if (!amount || !categoryId) {
+    const categoryId = params.id;
+    if (!categoryId) {
       return NextResponse.json(
-        { success: false, message: "Amount and category ID are required" },
+        { success: false, message: "Category ID is required" },
         { status: 400 }
       );
     }
@@ -43,39 +45,26 @@ export async function POST(req: Request) {
       );
     }
 
-    const totalSpent = await prisma.expense.aggregate({
-      where: { categoryId, userId: decoded.id },
-      _sum: { amount: true },
-    });
+    const { name, limit } = await req.json();
 
-    const categoryLimit = Number(category.limit);   // Type conversion
-    const totalAmountSpent = Number(totalSpent._sum.amount) || 0;
-    const amountToAdd = Number(amount);
+    // Prepare updated data object
+    const updateData: Record<string, any> = {};
+    if (name) updateData.name = name;
+    if (limit) updateData.limit = limit;
 
- 
-
-    const isOverLimit = categoryLimit
-      ? totalAmountSpent + amountToAdd > categoryLimit
-      : false;
-
-    const newExpense = await prisma.expense.create({
-      data: {
-        userId: decoded.id,
-        categoryId,
-        amount,
-        description,
-        isOverLimit,
-      },
+    const updatedCategory = await prisma.category.update({
+      where: { id: category.id },
+      data: updateData,
     });
 
     return NextResponse.json(
-      { success: true, newExpense, message: "Expense added successfully" },
-      { status: 201 }
+      { success: true, message: "Category updated successfully", updatedCategory },
+      { status: 200 }
     );
   } catch (error) {
-    console.error("Error adding expense:", error);
+    console.error("Error updating category:", error);
     return NextResponse.json(
-      { success: false, message: "Error adding expense" },
+      { success: false, message: "Error updating category" },
       { status: 500 }
     );
   }
