@@ -4,7 +4,7 @@ import prisma from "@/app/lib/prisma";
 
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const token = req.headers.get("authorization")?.split(" ")[1];
