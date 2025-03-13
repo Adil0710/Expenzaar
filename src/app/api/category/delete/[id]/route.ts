@@ -24,7 +24,7 @@ export async function DELETE(
       );
     }
     const resolvedParams = await params;
-    const categoryId = resolvedParams.id;
+    const categoryId = res.id;
 
     if (!categoryId) {
       return NextResponse.json(
