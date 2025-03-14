@@ -23,7 +23,7 @@ export async function PUT(
       );
     }
 
-    const resolvedParams = await params;
+
     const expenseId = resolvedParams.id;
     if (!expenseId)
       return NextResponse.json(
