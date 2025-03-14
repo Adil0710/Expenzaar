@@ -60,16 +60,32 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        IconLeft: ({ className, ...props }) => (
-          <ChevronLeft className={cn("size-4", className)} {...props} />
-        ),
-        IconRight: ({ className, ...props }) => (
-          <ChevronRight className={cn("size-4", className)} {...props} />
+        Nav: ({ nextMonth, previousMonth, onPreviousClick, onNextClick }) => (
+          <div className="flex items-center gap-2">
+            {previousMonth && (
+              <button
+                onClick={onPreviousClick}
+                className="absolute left-1"
+              >
+                <ChevronLeft className="size-4" />
+              </button>
+            )}
+            {nextMonth && (
+              <button
+                onClick={onNextClick}
+                className="absolute right-1"
+              >
+                <ChevronRight className="size-4" />
+              </button>
+            )}
+          </div>
         ),
       }}
       {...props}
     />
   )
 }
+
+Calendar.displayName = 'Calendar';
 
 export { Calendar }
