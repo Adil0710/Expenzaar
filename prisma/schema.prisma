@@ -20,7 +20,7 @@ model User {
   email         String   @unique
   password      String
   name          String
-  salary        Float
+  salary        Float?
   expenses      Expense[]
   categories    Category[]
   createdAt     DateTime @default(now())
