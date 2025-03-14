@@ -18,13 +18,14 @@ datasource db {
 model User {
   id            String   @id @default(uuid())
   email         String   @unique
-  password      String
+  password      String?
   name          String
   salary        Float?
   expenses      Expense[]
   categories    Category[]
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  googleAccount   Boolean   @default(false)
 }
 
 model Expense {
