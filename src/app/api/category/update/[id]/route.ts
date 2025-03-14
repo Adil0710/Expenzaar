@@ -7,6 +7,10 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    
+    const resolvedParams = await params;
+
+
     const token = req.headers.get("authorization")?.split(" ")[1];
     if (!token) {
       return NextResponse.json(
@@ -23,7 +27,6 @@ export async function PUT(
       );
     }
 
-    const resolvedParams = await params;
     const categoryId = resolvedParams.id;
     if (!categoryId) {
       return NextResponse.json(

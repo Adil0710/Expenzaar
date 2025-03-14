@@ -7,6 +7,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const resolvedParams = await params;
     const token = req.headers.get("authorization")?.split(" ")[1];
 
     if (!token) {
@@ -24,7 +25,6 @@ export async function DELETE(
       );
     }
 
-    const resolvedParams = await params;
     const categoryId = resolvedParams.id;
 
     if (!categoryId) {
