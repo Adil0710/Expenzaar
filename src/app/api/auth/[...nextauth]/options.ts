@@ -24,6 +24,7 @@ export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
+      id: "credentials",
       name: "Credentials",
       credentials: {
         email: { label: "Email", type: "text" },
