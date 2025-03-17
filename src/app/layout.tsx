@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 const poppins = Poppins({ // Correct Poppins import
   variable: "--font-poppins",
   subsets: ["latin"],
-  weight: ["100", "200", "300", "500", "600", "700". "800", "900"], // Add weights as needed
+  weight: ["100", "200", "300", "500", "600", "700", "800", "900"], // Add weights as needed
 });
 
 export const metadata: Metadata = {
