@@ -24,9 +24,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import { ModeToggle } from "@/app/components/mode-toggle";
-import SVGComponent from "@/components/logo";
-import LoaderLogo from "@/components/loader";
+
 import LoaderLine from "@/components/loaderline";
 
 export default function SignInPage() {
@@ -107,13 +105,11 @@ export default function SignInPage() {
 
   return (
     <div className="flex min-h-svh flex-col items-center justify-center dark:bg-black bg-neutral-100 p-6 md:p-10">
-      <div className=" dark:block hidden rounded-full h-44 w-44 bg-blue-400 absolute -left-14 -top-28 blur-3xl opacity-80"></div>
-      <ModeToggle />
-      <SVGComponent />
-      <LoaderLogo />
+      
       <div className="w-full max-w-sm md:max-w-3xl ">
-        <div className={cn("flex flex-col gap-6")}>
-          <Card className="overflow-hidden">
+        <div className={cn("relative z-0 flex flex-col gap-6")}>
+          <div className=" dark:block hidden rounded-full h-44 w-44 bg-blue-400 absolute -left-10 -top-10 blur-3xl opacity-80"></div>
+          <Card className="overflow-hidden z-10">
             <CardContent className="grid p-0 md:grid-cols-2">
               <Form {...form}>
                 <form
