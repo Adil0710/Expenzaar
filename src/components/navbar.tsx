@@ -6,7 +6,7 @@ import Link from 'next/link'
 
 function Navbar() {
   return (
-  <nav className=' flex justify-between items-center py-2 px-5 bg-white text-black fixed w-full  dark:bg-black dark:text-white'>
+  <nav className=' flex justify-between items-center py-2 px-5 bg-white/20 backdrop-blur-xs text-black fixed w-full  dark:bg-black dark:text-white'>
     <LoaderLogo/>
     <div>
     <Link href='/signin' className=''>Sign In</Link>
