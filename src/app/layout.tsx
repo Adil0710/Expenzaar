@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+
 import { Poppins } from "next/font/google"; // Correct import for Poppins
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import Navbar from "@/components/navbar";
 
-
-const poppins = Poppins({ // Correct Poppins import
+const poppins = Poppins({
+  // Correct Poppins import
   variable: "--font-poppins",
   subsets: ["latin"],
   weight: ["100", "200", "300", "500", "600", "700", "800", "900"], // Add weights as needed
@@ -26,9 +26,9 @@ export const metadata: Metadata = {
         media: "(prefers-color-scheme: dark)",
         url: "/favicon/favicondark.png",
         href: "/favicon/favicondark.png",
-      }
-    ]
-  }
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -38,9 +38,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${poppins.variable} antialiased`}
-      >
+      <body className={`${poppins.variable} antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
