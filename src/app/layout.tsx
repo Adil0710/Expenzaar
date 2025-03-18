@@ -4,6 +4,7 @@ import { Poppins } from "next/font/google"; // Correct import for Poppins
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import Navbar from "@/components/navbar";
+import { Toaster } from "@/components/ui/toaster";
 
 const poppins = Poppins({
   // Correct Poppins import
@@ -47,6 +48,7 @@ export default function RootLayout({
         >
           <Navbar />
           {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

@@ -65,7 +65,7 @@ export default function SignInPage() {
             variant: "destructive",
           });
         }
-      } else if (result?.url) {
+      } else if (result?.ok) {
         router.push("/dashboard");
 
         toast({
@@ -88,21 +88,7 @@ export default function SignInPage() {
       setLoading(false);
     }
   };
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   const email = e.currentTarget.email.value;
-  //   const password = e.currentTarget.password.value;
 
-  //   const result = await signIn("credentials", {
-  //     email,
-  //     password,
-  //     redirect: false, // Change here
-  //   });
-  //   console.log(result);
-
-  //   if (result?.ok) router.push("/dashboard");
-  // };
 
   return (
     <div className="flex min-h-svh flex-col items-center justify-center dark:bg-black bg-neutral-100 p-6 md:p-10">
@@ -158,7 +144,7 @@ export default function SignInPage() {
                               <FormControl>
                                 <Input
                                   type={showPassword ? "text" : "password"}
-                                  placeholder="******"
+                                  placeholder="••••••"
                                   {...field}
                                   className=" mb-2"
                                 />

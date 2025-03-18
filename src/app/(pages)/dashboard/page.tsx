@@ -10,7 +10,7 @@ export default async function Dashboard() {
   }
 
   return (
-    <div>
+    <div className="pt-12">
       <h1>Welcome, {session.user?.name || "User"}!</h1>
       <p>Your email: {session.user?.email}</p>
     </div>

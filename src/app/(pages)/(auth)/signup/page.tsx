@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { signIn } from "next-auth/react";
+
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
@@ -12,9 +12,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 import { ApiResponse } from "@/types/ApiResponse";
-import { signInSchema } from "@/schemas/signInSchema";
+import { signUpSchema } from "@/schemas/signUpSchema";
 import {
   Form,
   FormControl,
@@ -24,9 +24,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-
 import LoaderLine from "@/components/loaderline";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -34,51 +34,52 @@ export default function SignInPage() {
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
 
-  const form = useForm<z.infer<typeof signInSchema>>({
-    resolver: zodResolver(signInSchema),
+  const form = useForm<z.infer<typeof signUpSchema>>({
+    resolver: zodResolver(signUpSchema),
     defaultValues: {
-      identifier: "",
+      name: "",
+      email: "",
       password: "",
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof signInSchema>) => {
+  const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
     setLoading(true);
     try {
-      const result = await signIn("credentials", {
-        redirect: false,
-        email: data.identifier,
-        password: data.password,
-      });
-
-      if (result?.error) {
-        if (result.error === "CredentialsSignin") {
+      const response = await axios.post("/api/auth/signup", data);
+  
+      if (response.data.success) {
+        // Automatically sign in after successful signup
+        const result = await signIn("credentials", {
+          redirect: false, // Prevent NextAuth's automatic redirect
+          email: data.email,
+          password: data.password,
+        });
+  
+        if (result?.ok) {
+          router.push("/dashboard");
+  
           toast({
-            title: "Uh oh! Login Failed",
-            description: "Incorrect username or password",
-            variant: "destructive",
+            title: "Success",
+            description: "Your account has been created successfully.",
           });
         } else {
           toast({
-            title: "Uh oh! Error",
-            description: result.error,
+            title: "Login Failed",
+            description: "Account created, but login failed. Please login.",
             variant: "destructive",
           });
+          router.push("/signin");
         }
-      } else if (result?.url) {
-        router.push("/dashboard");
-
-        toast({
-          title: "Login Successful",
-          description: "Welcome back!",
-        });
+      } else {
+        throw new Error(response.data.message);
       }
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
       const errorMessage =
         axiosError.response?.data.message ||
         "An unexpected error occurred. Please try again later.";
-
+  
       toast({
         title: "Error",
         description: errorMessage,
@@ -88,11 +89,10 @@ export default function SignInPage() {
       setLoading(false);
     }
   };
-
+  
 
   return (
     <div className="flex min-h-svh flex-col items-center justify-center dark:bg-black bg-neutral-100 p-6 md:p-10">
-      
       <div className="w-full max-w-sm md:max-w-3xl ">
         <div className={cn("relative z-0 flex flex-col gap-6")}>
           <div className=" dark:block hidden rounded-full h-44 w-44 bg-blue-400 absolute -left-10 -top-10 blur-3xl opacity-80"></div>
@@ -113,7 +113,30 @@ export default function SignInPage() {
                     <div className="grid gap-2">
                       <FormField
                         control={form.control}
-                        name="identifier"
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Name</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="text"
+                                required
+                                placeholder="john doe"
+                                {...field}
+                                onChange={(e) =>
+                                  field.onChange(e.target.value.toLowerCase())
+                                }
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <FormField
+                        control={form.control}
+                        name="email"
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Email</FormLabel>
@@ -121,7 +144,7 @@ export default function SignInPage() {
                               <Input
                                 type="email"
                                 required
-                                placeholder="m@example.com"
+                                placeholder="john@example.com"
                                 {...field}
                                 onChange={(e) =>
                                   field.onChange(e.target.value.toLowerCase())
@@ -144,7 +167,7 @@ export default function SignInPage() {
                               <FormControl>
                                 <Input
                                   type={showPassword ? "text" : "password"}
-                                  placeholder="******"
+                                  placeholder="••••••"
                                   {...field}
                                   className=" mb-2"
                                 />
@@ -204,7 +227,10 @@ export default function SignInPage() {
                     </div>
                     <div className="text-center text-sm">
                       Already have an account?{" "}
-                      <Link href="/signin" className="underline underline-offset-4">
+                      <Link
+                        href="/signin"
+                        className="underline underline-offset-4"
+                      >
                         Login
                       </Link>
                     </div>
