@@ -47,7 +47,7 @@ export default function SignInPage() {
     setLoading(true);
     try {
       const response = await axios.post("/api/auth/signup", data);
-  
+
       if (response.data.success) {
         // Automatically sign in after successful signup
         const result = await signIn("credentials", {
@@ -55,10 +55,10 @@ export default function SignInPage() {
           email: data.email,
           password: data.password,
         });
-  
+
         if (result?.ok) {
           router.push("/dashboard");
-  
+
           toast({
             title: "Success",
             description: "Your account has been created successfully.",
@@ -79,7 +79,7 @@ export default function SignInPage() {
       const errorMessage =
         axiosError.response?.data.message ||
         "An unexpected error occurred. Please try again later.";
-  
+
       toast({
         title: "Error",
         description: errorMessage,
@@ -89,7 +89,33 @@ export default function SignInPage() {
       setLoading(false);
     }
   };
-  
+
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+
+    try {
+      await signIn("google");
+
+      toast({
+        title: "Login Successful",
+        description: "Welcome back!",
+        variant: "default",
+      });
+    } catch (error) {
+      console.error("Google Sign-In failed:", error);
+
+      const errorMessage =
+        error instanceof Error ? error.message : "An unknown error occurred";
+
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="flex min-h-svh flex-col items-center justify-center dark:bg-black bg-neutral-100 p-6 md:p-10">
@@ -212,6 +238,9 @@ export default function SignInPage() {
                       <Button
                         variant="outline"
                         className="w-full cursor-pointer"
+                        type="button"
+                        onClick={handleGoogleSignIn}
+                        disabled={loading}
                       >
                         <Image
                           className="w-4 h-4 mr-1"
