@@ -59,6 +59,7 @@ export const authOptions: NextAuthOptions = {
             googleAccount: user.googleAccount || false,
           };
         } catch (error) {
+            console.log(error)
           throw new Error("Authentication failed.");
         }
       },
@@ -72,7 +73,7 @@ export const authOptions: NextAuthOptions = {
   ],
 
   callbacks: {
-    async signIn({ user, account, profile }) {
+    async signIn({ user, account }) {
       if (account?.provider === "google") {
         const existingUser = await prisma.user.findUnique({
           where: { email: user.email as string },
