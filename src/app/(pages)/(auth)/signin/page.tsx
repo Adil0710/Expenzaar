@@ -89,10 +89,37 @@ export default function SignInPage() {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+
+    try {
+      await signIn("google", { redirect: false });
+
+      router.push("/dashboard"); // Ensure manual redirect since `redirect: false` prevents auto-redirect
+
+      toast({
+        title: "Login Successful",
+        description: "Welcome back!",
+        variant: "default",
+      });
+    } catch (error) {
+      console.error("Google Sign-In failed:", error);
+
+      const errorMessage =
+        error instanceof Error ? error.message : "An unknown error occurred";
+
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="flex min-h-svh flex-col items-center justify-center dark:bg-black bg-neutral-100 p-6 md:p-10">
-      
       <div className="w-full max-w-sm md:max-w-3xl ">
         <div className={cn("relative z-0 flex flex-col gap-6")}>
           <div className=" dark:block hidden rounded-full h-44 w-44 bg-blue-400 absolute -left-10 -top-10 blur-3xl opacity-80"></div>
@@ -189,6 +216,8 @@ export default function SignInPage() {
                       <Button
                         variant="outline"
                         className="w-full cursor-pointer"
+                        onClick={handleGoogleSignIn}
+                        disabled={loading}
                       >
                         <Image
                           className="w-4 h-4 mr-1"
@@ -204,7 +233,10 @@ export default function SignInPage() {
                     </div>
                     <div className="text-center text-sm">
                       Don&apos;t have an account?{" "}
-                      <Link href="/signup" className="underline underline-offset-4">
+                      <Link
+                        href="/signup"
+                        className="underline underline-offset-4"
+                      >
                         Sign up
                       </Link>
                     </div>

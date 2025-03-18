@@ -1,4 +1,6 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/options";
+
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+
 import { getServerSession } from "next-auth";
 
 
@@ -13,6 +15,7 @@ export default async function Dashboard() {
     <div className="pt-12">
       <h1>Welcome, {session.user?.name || "User"}!</h1>
       <p>Your email: {session.user?.email}</p>
+      
     </div>
   );
 }
