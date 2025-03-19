@@ -1,33 +1,36 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   AudioWaveform,
   BookOpen,
   Bot,
   Command,
   Frame,
-  GalleryVerticalEnd,
   LogOut,
   Map,
   PieChart,
   Settings2,
   SquareTerminal,
-} from "lucide-react"
+} from "lucide-react";
 
-import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
+import { NavMain } from "@/components/nav-main";
+import { NavProjects } from "@/components/nav-projects";
 
-import { TeamSwitcher } from "@/components/team-switcher"
+import { TeamSwitcher } from "@/components/team-switcher";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar"
-import { signOut } from "next-auth/react"
-import { Button } from "./ui/button"
+} from "@/components/ui/sidebar";
+import { signOut } from "next-auth/react";
+import { Button } from "./ui/button";
+
+import Logo from "./logo";
+import { ModeToggle } from "@/app/components/mode-toggle";
+import { NavUser } from "./nav-user";
 
 // This is sample data.
 const data = {
@@ -38,19 +41,9 @@ const data = {
   },
   teams: [
     {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
+      name: "Expenzaar",
+      logo: () => <Logo />,
       plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
     },
   ],
   navMain: [
@@ -157,7 +150,7 @@ const data = {
       icon: Map,
     },
   ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -170,9 +163,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
-      <Button variant="ghost" className=" flex  gap-2" onClick={() => signOut()}>Log Out <LogOut /></Button>
+        <ModeToggle />
+        <Button
+          variant="ghost"
+          className=" flex  gap-2"
+          onClick={() => signOut()}
+        >
+          Log Out <LogOut />
+        </Button>
+        <NavUser user={data.user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

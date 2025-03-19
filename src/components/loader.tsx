@@ -1,14 +1,17 @@
 "use client";
 import { motion } from "framer-motion";
 
-const LoaderLogo = () => (
+interface LoaderLogoProps {
+  className?: string;
+}
+const LoaderLogo = ( {className} : LoaderLogoProps) => (
   <svg
     width={54}
     height={45}
     viewBox="0 0 54 54"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
-    className="dark:invert"
+    className={`dark:invert ${className}`}
     strokeOpacity={0}
   >
     <g filter="url(#filter0_ddiii_3202_880)">
