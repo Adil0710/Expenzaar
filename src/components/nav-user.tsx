@@ -45,13 +45,13 @@ export function NavUser({
 
   return (
     <SidebarMenu>
-      <SidebarMenuItem>
+      <SidebarMenuItem >
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               tooltip="Profile"
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user.avatar} alt={user.name} />
@@ -92,7 +92,7 @@ export function NavUser({
 
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
               <DialogTrigger asChild>
-                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                <DropdownMenuItem onSelect={(e) => e.preventDefault()} className=" cursor-pointer">
                   <CircleUser className="mr-2 h-4 w-4" />
                   Account
                 </DropdownMenuItem>
@@ -139,7 +139,7 @@ export function NavUser({
 
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              className="text-red-500 focus:bg-red-300/30 focus:text-red-500"
+              className="text-red-500 focus:bg-red-300/30 focus:text-red-500 cursor-pointer"
               onClick={() => signOut()}
             >
               <LogOut className="mr-2 h-4 w-4 text-red-500" />
