@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import LoaderLogo from "./loader";
-import { ModeToggle } from "@/app/components/mode-toggle";
+import { ModeToggle } from "@/components/mode-toggle";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { signOut, useSession } from "next-auth/react";
@@ -22,7 +22,7 @@ function Navbar() {
         <Link href="/signin" className="">
           Sign In
         </Link>
-        <ModeToggle />
+        <ModeToggle size={"icon"} />
         {session.data && <Button onClick={() => signOut()}>Log Out</Button>}
       </div>
     </nav>

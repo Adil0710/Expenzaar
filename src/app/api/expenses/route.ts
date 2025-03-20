@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { verifyToken } from "@/app/lib/auth";
-import prisma from "@/app/lib/prisma";
+import { verifyToken } from "@/lib/auth";
+import prisma from "@/lib/prisma";
 
 interface DecodedToken {
   id: string;
@@ -34,7 +34,7 @@ export async function GET(req: Request) {
           },
         },
       },
-      orderBy: { createdAt: "asc" } // Order by ascending to track cumulative total correctly
+      orderBy: { createdAt: "asc" }, // Order by ascending to track cumulative total correctly
     });
 
     if (!expenses.length) {
@@ -70,7 +70,7 @@ export async function GET(req: Request) {
       return {
         ...expense,
         totalSpent,
-        isOverLimit
+        isOverLimit,
       };
     });
 

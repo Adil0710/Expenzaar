@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { verifyToken } from "@/app/lib/auth";
-import prisma from "@/app/lib/prisma";
+import { verifyToken } from "@/lib/auth";
+import prisma from "@/lib/prisma";
 
 export async function DELETE(
   req: Request,
@@ -53,8 +53,6 @@ export async function DELETE(
     await prisma.expense.delete({
       where: { id: expenseId },
     });
-
-
 
     return NextResponse.json(
       { success: true, message: "expense deleted successfully" },

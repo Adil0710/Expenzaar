@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { verifyToken } from "@/app/lib/auth";
-import prisma from "@/app/lib/prisma";
+import { verifyToken } from "@/lib/auth";
+import prisma from "@/lib/prisma";
 
 export async function DELETE(
   req: Request,

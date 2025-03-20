@@ -1,21 +1,9 @@
 "use client";
 
 import * as React from "react";
-import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
-  LogOut,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
-} from "lucide-react";
+import { BookOpen, Sparkles, Settings2, LayoutDashboard } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
-import { NavProjects } from "@/components/nav-projects";
 
 import { TeamSwitcher } from "@/components/team-switcher";
 import {
@@ -23,14 +11,15 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  SidebarMenuButton,
   SidebarRail,
+  SidebarSeparator,
 } from "@/components/ui/sidebar";
-import { signOut } from "next-auth/react";
-import { Button } from "./ui/button";
 
 import Logo from "./logo";
-import { ModeToggle } from "@/app/components/mode-toggle";
+import { ModeToggle } from "@/components/mode-toggle";
 import { NavUser } from "./nav-user";
+import { Collapsible, CollapsibleTrigger } from "./ui/collapsible";
 
 // This is sample data.
 const data = {
@@ -48,106 +37,25 @@ const data = {
   ],
   navMain: [
     {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: LayoutDashboard,
       isActive: true,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
-      ],
     },
     {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Documentation",
-      url: "#",
+      title: "Expenses",
+      url: "/dashboard/expense",
       icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
+    },
+    {
+      title: "AI",
+      url: "#",
+      icon: Sparkles,
     },
     {
       title: "Settings",
       url: "#",
       icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
     },
   ],
 };
@@ -160,18 +68,20 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
-        <ModeToggle />
-        <Button
-          variant="ghost"
-          className=" flex  gap-2"
-          onClick={() => signOut()}
-        >
-          Log Out <LogOut />
-        </Button>
         <NavUser user={data.user} />
+        <SidebarSeparator className=" mx-0 my-1" />
+
+        <Collapsible asChild className="group/collapsible">
+          <CollapsibleTrigger asChild>
+            <ModeToggle
+              variant={"ghost"}
+              className=" w-full flex justify-center items-center"
+            />
+          </CollapsibleTrigger>
+        </Collapsible>
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { verifyToken } from "@/app/lib/auth";
-import prisma from "@/app/lib/prisma";
+import { verifyToken } from "@/lib/auth";
+import prisma from "@/lib/prisma";
 
 export async function GET(req: Request) {
   try {
@@ -37,20 +37,25 @@ export async function GET(req: Request) {
       },
       orderBy: { name: "asc" },
     });
-    
+
     // Add remaining balance calculation
     const updatedCategories = categories.map((category) => {
-      const totalSpent = category.expenses.reduce((sum, exp) => sum + exp.amount, 0);
+      const totalSpent = category.expenses.reduce(
+        (sum, exp) => sum + exp.amount,
+        0
+      );
       const remaining = Math.max(category.limit - totalSpent, 0);
-    
+
       return {
         ...category,
         remaining,
       };
     });
-    
-    return NextResponse.json({ success: true, categories: updatedCategories }, { status: 200 });
-    
+
+    return NextResponse.json(
+      { success: true, categories: updatedCategories },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error fetching categories:", error);
     return NextResponse.json(

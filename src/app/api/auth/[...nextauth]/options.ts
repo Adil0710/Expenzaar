@@ -2,7 +2,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import bcrypt from "bcryptjs";
-import prisma from "@/app/lib/prisma";
+import prisma from "@/lib/prisma";
 import type { DefaultSession, NextAuthOptions } from "next-auth";
 
 declare module "next-auth" {
@@ -58,7 +58,7 @@ export const authOptions: NextAuthOptions = {
             googleAccount: user.googleAccount || false,
           };
         } catch (error) {
-            console.log(error)
+          console.log(error);
           throw new Error("Authentication failed.");
         }
       },
@@ -103,7 +103,6 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
     async session({ session, token }) {
-     
       if (token) {
         session.user.id = token.id as string;
         session.user.name = token.name as string;
@@ -136,5 +135,3 @@ export const authOptions: NextAuthOptions = {
 
   secret: process.env.NEXTAUTH_SECRET,
 };
-
-

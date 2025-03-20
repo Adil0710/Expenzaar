@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import prisma from "@/app/lib/prisma";
-import { verifyToken } from "@/app/lib/auth";
+import prisma from "@/lib/prisma";
+import { verifyToken } from "@/lib/auth";
 
 export async function PUT(
   req: Request,
@@ -22,7 +22,6 @@ export async function PUT(
         { status: 401 }
       );
     }
-
 
     const expenseId = resolvedParams.id;
     if (!expenseId)

@@ -1,15 +1,13 @@
 import { NextResponse } from "next/server";
-import { verifyToken } from "@/app/lib/auth";
-import prisma from "@/app/lib/prisma";
+import { verifyToken } from "@/lib/auth";
+import prisma from "@/lib/prisma";
 
 export async function PUT(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    
     const resolvedParams = await params;
-
 
     const token = req.headers.get("authorization")?.split(" ")[1];
     if (!token) {
