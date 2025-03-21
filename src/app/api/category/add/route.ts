@@ -1,25 +1,38 @@
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth/next";
+
 import { verifyToken } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { authOptions } from "../../auth/[...nextauth]/options";
 
 export async function POST(req: Request) {
   try {
-    const token = req.headers.get("authorization")?.split(" ")[1];
-    if (!token) {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized" },
-        { status: 401 }
-      );
+    // Try NextAuth session (for web users)
+    const session = await getServerSession(authOptions);
+    let userId = session?.user?.id;
+
+    // If no session, fallback to JWT (for mobile users)
+    if (!userId) {
+      const token = req.headers.get("authorization")?.split(" ")[1];
+      if (!token) {
+        return NextResponse.json(
+          { success: false, message: "Unauthorized" },
+          { status: 401 }
+        );
+      }
+
+      const decoded = verifyToken(token);
+      if (!decoded || typeof decoded === "string") {
+        return NextResponse.json(
+          { success: false, message: "Invalid token" },
+          { status: 401 }
+        );
+      }
+
+      userId = decoded.id;
     }
 
-    const decoded = verifyToken(token);
-    if (!decoded || typeof decoded === "string") {
-      return NextResponse.json(
-        { success: false, message: "Invalid token" },
-        { status: 401 }
-      );
-    }
-
+    // Parse request body
     const { name, limit } = await req.json();
 
     if (!name) {
@@ -29,12 +42,9 @@ export async function POST(req: Request) {
       );
     }
 
-    // Check if the category name already exists for the user
+    // Check if the category already exists for the user
     const existingCategory = await prisma.category.findFirst({
-      where: {
-        userId: decoded.id,
-        name,
-      },
+      where: { userId, name },
     });
 
     if (existingCategory) {
@@ -44,11 +54,19 @@ export async function POST(req: Request) {
       );
     }
 
+    // Create new category
+    if (!userId) {
+      return NextResponse.json(
+        { success: false, message: "User ID is required" },
+        { status: 400 }
+      );
+    }
+
     const newCategory = await prisma.category.create({
       data: {
-        userId: decoded.id,
+        userId: userId as string,
         name,
-        limit: limit || 0, // Default to 0 if no limit provided
+        limit: limit || 0, // Default to 0 if not provided
       },
     });
 

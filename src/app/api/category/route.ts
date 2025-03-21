@@ -1,27 +1,38 @@
 import { NextResponse } from "next/server";
 import { verifyToken } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/options";
 
 export async function GET(req: Request) {
   try {
-    const token = req.headers.get("authorization")?.split(" ")[1];
-    if (!token) {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized" },
-        { status: 401 }
-      );
-    }
+    // Try NextAuth session (for web users)
+    const session = await getServerSession(authOptions);
+    let userId = session?.user?.id;
 
-    const decoded = verifyToken(token);
-    if (!decoded || typeof decoded === "string") {
-      return NextResponse.json(
-        { success: false, message: "Invalid token" },
-        { status: 401 }
-      );
+    // If no session, fallback to JWT (for mobile users)
+    if (!userId) {
+      const token = req.headers.get("authorization")?.split(" ")[1];
+      if (!token) {
+        return NextResponse.json(
+          { success: false, message: "Unauthorized" },
+          { status: 401 }
+        );
+      }
+
+      const decoded = verifyToken(token);
+      if (!decoded || typeof decoded === "string") {
+        return NextResponse.json(
+          { success: false, message: "Invalid token" },
+          { status: 401 }
+        );
+      }
+
+      userId = decoded.id;
     }
 
     const categories = await prisma.category.findMany({
-      where: { userId: decoded.id },
+      where: { userId },
       select: {
         id: true,
         name: true,
@@ -44,7 +55,7 @@ export async function GET(req: Request) {
         (sum, exp) => sum + exp.amount,
         0
       );
-      const remaining = Math.max(category.limit - totalSpent, 0);
+      const remaining = category.limit - totalSpent;
 
       return {
         ...category,

@@ -1,26 +1,38 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { verifyToken } from "@/lib/auth";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 
 export async function PUT(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const resolvedParams = await params;
   try {
-    const token = req.headers.get("authorization")?.split(" ")[1];
-    if (!token)
-      return NextResponse.json(
-        { success: false, message: "Unauthorized" },
-        { status: 401 }
-      );
+    const resolvedParams = await params;
+    // Try NextAuth session (for web users)
+    const session = await getServerSession(authOptions);
+    let userId = session?.user?.id;
 
-    const decoded = verifyToken(token);
-    if (!decoded || typeof decoded === "string") {
-      return NextResponse.json(
-        { success: false, message: "Invalid token" },
-        { status: 401 }
-      );
+    // If no session, fallback to JWT (for mobile users)
+    if (!userId) {
+      const token = req.headers.get("authorization")?.split(" ")[1];
+      if (!token) {
+        return NextResponse.json(
+          { success: false, message: "Unauthorized" },
+          { status: 401 }
+        );
+      }
+
+      const decoded = verifyToken(token);
+      if (!decoded || typeof decoded === "string") {
+        return NextResponse.json(
+          { success: false, message: "Invalid token" },
+          { status: 401 }
+        );
+      }
+
+      userId = decoded.id;
     }
 
     const expenseId = resolvedParams.id;
@@ -31,7 +43,7 @@ export async function PUT(
       );
 
     const existingExpense = await prisma.expense.findFirst({
-      where: { id: expenseId, userId: decoded.id },
+      where: { id: expenseId, userId },
     });
 
     if (!existingExpense) {
@@ -50,7 +62,7 @@ export async function PUT(
     }
 
     const newCategory = await prisma.category.findFirst({
-      where: { id: categoryId, userId: decoded.id },
+      where: { id: categoryId, userId },
     });
 
     if (!newCategory) {
@@ -71,7 +83,7 @@ export async function PUT(
       const totalSpent = await prisma.expense.aggregate({
         where: {
           categoryId,
-          userId: decoded.id,
+          userId,
           createdAt: {
             gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
           },

@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { verifyToken } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/options";
 
 interface DecodedToken {
   id: string;
@@ -8,24 +10,33 @@ interface DecodedToken {
 
 export async function GET(req: Request) {
   try {
-    const token = req.headers.get("authorization")?.split(" ")[1];
-    if (!token) {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized" },
-        { status: 401 }
-      );
-    }
+    // Try NextAuth session (for web users)
+    const session = await getServerSession(authOptions);
+    let userId = session?.user?.id;
 
-    const decoded = verifyToken(token) as DecodedToken | string;
-    if (!decoded || typeof decoded === "string") {
-      return NextResponse.json(
-        { success: false, message: "Invalid token" },
-        { status: 401 }
-      );
+    // If no session, fallback to JWT (for mobile users)
+    if (!userId) {
+      const token = req.headers.get("authorization")?.split(" ")[1];
+      if (!token) {
+        return NextResponse.json(
+          { success: false, message: "Unauthorized" },
+          { status: 401 }
+        );
+      }
+
+      const decoded = verifyToken(token);
+      if (!decoded || typeof decoded === "string") {
+        return NextResponse.json(
+          { success: false, message: "Invalid token" },
+          { status: 401 }
+        );
+      }
+
+      userId = decoded.id;
     }
 
     const expenses = await prisma.expense.findMany({
-      where: { userId: decoded.id },
+      where: { userId },
       include: {
         category: {
           select: {
@@ -34,7 +45,7 @@ export async function GET(req: Request) {
           },
         },
       },
-      orderBy: { createdAt: "asc" }, // Order by ascending to track cumulative total correctly
+      orderBy: { createdAt: "desc" }, // Order by ascending to track cumulative total correctly
     });
 
     if (!expenses.length) {
