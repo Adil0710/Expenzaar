@@ -4,10 +4,6 @@ import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/options";
 
-interface DecodedToken {
-  id: string;
-}
-
 export async function GET(req: Request) {
   try {
     // Try NextAuth session (for web users)
