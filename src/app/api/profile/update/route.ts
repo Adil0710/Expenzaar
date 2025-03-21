@@ -44,31 +44,54 @@ export async function PUT(req: Request) {
     }
 
     // Parse request body
-    const { name, email, salary, newPassword } = await req.json();
+    const body = await req.json();
+    const { name, email, salary, currentPassword, newPassword } = body;
+
+    // If updating password, verify current password
+    if (currentPassword && newPassword) {
+      if (!user.password) {
+        return NextResponse.json(
+          { success: false, message: "User password not set" },
+          { status: 400 }
+        );
+      }
+      const isValidPassword = await bcrypt.compare(currentPassword, user.password);
+      if (!isValidPassword) {
+        return NextResponse.json(
+          { success: false, message: "Current password is incorrect" },
+          { status: 400 }
+        );
+      }
+    }
 
     // Update fields if provided
     const updateData: Record<string, string | number> = {};
 
     if (name) updateData.name = name;
     if (email) updateData.email = email;
-    if (salary) updateData.salary = salary;
-
-    // Handle password update (Only hash if new password is provided)
+    if (typeof salary !== 'undefined') updateData.salary = salary;
     if (newPassword) {
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
-      updateData.password = hashedPassword;
+      updateData.password = await bcrypt.hash(newPassword, 10);
     }
 
     // Save updated user
-    await prisma.user.update({
+    const updatedUser = await prisma.user.update({
       where: { id: user.id },
       data: updateData,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        salary: true,
+        createdAt: true,
+      },
     });
 
-    return NextResponse.json(
-      { success: true, message: "Profile updated successfully" },
-      { status: 200 }
-    );
+    return NextResponse.json({
+      success: true,
+      message: "Profile updated successfully",
+      data: updatedUser,
+    });
   } catch (error) {
     console.error(error);
     return NextResponse.json(
