@@ -79,7 +79,7 @@ export function NavUser({
   const { data: session } = useSession();
   const { isMobile } = useSidebar();
   const [isOpen, setIsOpen] = useState(false);
-  const [passwordChange, setPasswordChange] = useState(false);
+
   const {
     profile,
     profileLoading,
@@ -88,11 +88,11 @@ export function NavUser({
     updatePassword,
   } = useProfileStore();
   const { toast } = useToast();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [tabType, setTabType] = useState<"profile" | "password">("profile");
   const [showPassword, setShowPassword] = useState(false);
-  const [newPassword, setNewPassword] = useState(false)
-  const [confirmPassword, setConfirmPassword] = useState(false)
+  const [newPassword, setNewPassword] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState(false);
 
   const loggedUser = {
     name: session?.user.name || "Unknown",
@@ -141,6 +141,7 @@ export function NavUser({
         throw new Error("Failed to update profile");
       }
     } catch (error) {
+      console.log(error);
       toast({
         title: "Update Failed",
         description: "Failed to update profile. Please try again.",
@@ -148,7 +149,7 @@ export function NavUser({
       });
     }
   };
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onPasswordSubmit = async (data: any) => {
     try {
       const success = await updatePassword({
@@ -161,12 +162,13 @@ export function NavUser({
           title: "Password Updated",
           description: "Your password has been changed successfully.",
         });
-        setPasswordChange(false);
+        setIsOpen(false);
         passwordForm.reset();
       } else {
         throw new Error("Failed to update password");
       }
     } catch (error) {
+      console.log(error)
       toast({
         title: "Update Failed",
         description: "Failed to update password. Please try again.",
@@ -279,7 +281,7 @@ export function NavUser({
                       <DialogTitle>Edit profile</DialogTitle>
                       <DialogDescription>
                         Make changes to your profile here. Click save when
-                        you're done.
+                        you&apos;re done.
                       </DialogDescription>
                     </DialogHeader>
 
@@ -423,7 +425,7 @@ export function NavUser({
                                     onClick={() =>
                                       setShowPassword(!showPassword)
                                     }
-                                    type="button" 
+                                    type="button"
                                   >
                                     {showPassword ? (
                                       <EyeOffIcon className="h-4 w-4" />
@@ -453,7 +455,7 @@ export function NavUser({
                                 <div className="relative">
                                   <FormControl>
                                     <Input
-                                       type={newPassword ? "text" : "password"}
+                                      type={newPassword ? "text" : "password"}
                                       placeholder="Enter new password"
                                       {...field}
                                     />
@@ -462,10 +464,8 @@ export function NavUser({
                                     variant="ghost"
                                     size="icon"
                                     className="absolute right-2 top-1/2 transform -translate-y-1/2 h-7 w-7"
-                                    onClick={() =>
-                                      setNewPassword(!newPassword)
-                                    }
-                                    type="button" 
+                                    onClick={() => setNewPassword(!newPassword)}
+                                    type="button"
                                   >
                                     {newPassword ? (
                                       <EyeOffIcon className="h-4 w-4" />
@@ -496,7 +496,9 @@ export function NavUser({
                                 <div className="relative">
                                   <FormControl>
                                     <Input
-                                       type={confirmPassword ? "text" : "password"}
+                                      type={
+                                        confirmPassword ? "text" : "password"
+                                      }
                                       placeholder="Confirm new password"
                                       {...field}
                                     />
@@ -508,7 +510,7 @@ export function NavUser({
                                     onClick={() =>
                                       setConfirmPassword(!confirmPassword)
                                     }
-                                    type="button" 
+                                    type="button"
                                   >
                                     {confirmPassword ? (
                                       <EyeOffIcon className="h-4 w-4" />
