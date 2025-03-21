@@ -8,7 +8,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -21,8 +20,19 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { getUserInitials } from "@/helpers/getUserInitials";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 
@@ -45,7 +55,7 @@ export function NavUser({
 
   return (
     <SidebarMenu>
-      <SidebarMenuItem >
+      <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
@@ -92,7 +102,10 @@ export function NavUser({
 
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
               <DialogTrigger asChild>
-                <DropdownMenuItem onSelect={(e) => e.preventDefault()} className=" cursor-pointer">
+                <DropdownMenuItem
+                  onSelect={(e) => e.preventDefault()}
+                  className=" cursor-pointer"
+                >
                   <CircleUser className="mr-2 h-4 w-4" />
                   Account
                 </DropdownMenuItem>
@@ -110,7 +123,7 @@ export function NavUser({
                       </AvatarFallback>
                     </Avatar>
                   </div>
-                  
+
                   <Card>
                     <CardHeader>
                       <CardDescription>Personal Information</CardDescription>
@@ -129,7 +142,9 @@ export function NavUser({
                           <Mail className="h-4 w-4 text-muted-foreground" />
                           <Label>Email</Label>
                         </div>
-                        <p className="text-sm font-medium">{loggedUser.email}</p>
+                        <p className="text-sm font-medium">
+                          {loggedUser.email}
+                        </p>
                       </div>
                     </CardContent>
                   </Card>

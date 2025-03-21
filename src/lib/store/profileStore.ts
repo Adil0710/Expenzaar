@@ -28,6 +28,7 @@ export const useProfileStore = create<ProfileState>((set) => ({
     try {
       const response = await axios.get("/api/profile");
       set({ profile: response.data, profileLoading: false });
+      // disable-eslint-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       set({
         profileError: error.response?.data?.message || "Failed to load profile",
@@ -43,9 +44,14 @@ export const useProfileStore = create<ProfileState>((set) => ({
       const response = await axios.put("/api/update", updatedData);
       set({ profile: response.data, profileLoading: false });
       return true;
+      // disable-eslint-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-        set({profileError: error.response?.data?.message || "Failed to update profile", profileLoading: false})
-        return false
+      set({
+        profileError:
+          error.response?.data?.message || "Failed to update profile",
+        profileLoading: false,
+      });
+      return false;
     }
   },
 }));
