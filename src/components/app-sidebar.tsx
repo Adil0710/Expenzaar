@@ -20,7 +20,7 @@ import { ModeToggle } from "@/components/mode-toggle";
 import { NavUser } from "./nav-user";
 import { Collapsible, CollapsibleTrigger } from "./ui/collapsible";
 
-// This is sample data.
+
 const data = {
   user: {
     name: "shadcn",
