@@ -168,7 +168,7 @@ export function NavUser({
         throw new Error("Failed to update password");
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
       toast({
         title: "Update Failed",
         description: "Failed to update password. Please try again.",
