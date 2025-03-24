@@ -14,12 +14,22 @@ import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface CardProps {
-  salary?: number;
+  salary: number;
   profileLoading: boolean;
+  totalSpent: number;
+  remainingBalance: number;
+  spentPercentage: number;
+  remainingPercentage: number
 }
-export default function DashboardCard({ salary, profileLoading }: CardProps) {
-  const value = 120;
-  const [state, setState] = useState(false);
+export default function DashboardCard({
+  salary,
+  profileLoading,
+  totalSpent,
+  remainingBalance,
+  spentPercentage,
+  remainingPercentage,
+}: CardProps) {
+  const isOverBudget = totalSpent > salary; // Check if over budget
 
   return (
     <div className="*:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4 grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card lg:px-6">
@@ -51,22 +61,6 @@ export default function DashboardCard({ salary, profileLoading }: CardProps) {
               <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
                 ₹ {salary}
               </CardTitle>
-              <div className="absolute right-4 top-5">
-                <Badge
-                  variant="outline"
-                  className={cn(
-                    "flex gap-1 rounded-lg text-xs bg-success",
-                    state && "bg-danger"
-                  )}
-                >
-                  {state ? (
-                    <TrendingDownIcon className="size-3" />
-                  ) : (
-                    <TrendingUpIcon className="size-3" />
-                  )}
-                  +12.5%
-                </Badge>
-              </div>
             </CardHeader>
             <CardFooter className="flex-col items-start gap-1 text-sm">
               <div className="line-clamp-1 flex gap-2 font-medium">
@@ -79,55 +73,61 @@ export default function DashboardCard({ salary, profileLoading }: CardProps) {
           </Card>
           <Card className="@container/card">
             <CardHeader className="relative">
-              <CardDescription>New Customers</CardDescription>
+              <CardDescription>Total Spent</CardDescription>
               <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
-                1,234
+                ₹ {totalSpent}
               </CardTitle>
               <div className="absolute right-4 top-5">
                 <Badge
                   variant="outline"
                   className={cn(
-                    "flex gap-1 rounded-lg text-xs bg-success",
-                    state && "bg-danger"
+                    "flex gap-1 rounded-lg text-xs",
+                    isOverBudget ? "bg-danger" : "bg-success"
                   )}
                 >
-                  {state ? (
+                  {isOverBudget ? (
                     <TrendingDownIcon className="size-3" />
                   ) : (
                     <TrendingUpIcon className="size-3" />
                   )}
-                  -20%
+                  {isOverBudget
+                    ? `-${spentPercentage}%`
+                    : `+${spentPercentage}%`}
                 </Badge>
               </div>
             </CardHeader>
             <CardFooter className="flex-col items-start gap-1 text-sm">
               <div className="line-clamp-1 flex gap-2 font-medium">
-                Down 20% this period <TrendingDownIcon className="size-4" />
+                {isOverBudget ? (
+                  <>
+                    Overspent this period{" "}
+                    <TrendingDownIcon className="size-4" />
+                  </>
+                ) : (
+                  <>
+                    Within budget <TrendingUpIcon className="size-4" />
+                  </>
+                )}
               </div>
               <div className="text-muted-foreground">
-                Acquisition needs attention
+                {isOverBudget
+                  ? "Reduce expenses to balance budget"
+                  : "Good financial management"}
               </div>
             </CardFooter>
           </Card>
           <Card className="@container/card">
             <CardHeader className="relative">
-              <CardDescription>Active Accounts</CardDescription>
+              <CardDescription>Remaining Balance</CardDescription>
               <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
-                45,678
+                ₹ {remainingBalance}
               </CardTitle>
               <div className="absolute right-4 top-5">
                 <Badge
                   variant="outline"
-                  className={cn(
-                    "flex gap-1 rounded-lg text-xs bg-success",
-                    state && "bg-danger"
-                  )}
+                  className={cn("flex gap-1 rounded-lg text-xs bg-success")}
                 >
-                  {state ? (
-                    <TrendingDownIcon className="size-3" />
-                  ) : (
-                    <TrendingUpIcon className="size-3" />
-                  )}
+                  <TrendingDownIcon className="size-3" />
                   +12.5%
                 </Badge>
               </div>
@@ -150,16 +150,9 @@ export default function DashboardCard({ salary, profileLoading }: CardProps) {
               <div className="absolute right-4 top-5">
                 <Badge
                   variant="outline"
-                  className={cn(
-                    "flex gap-1 rounded-lg text-xs bg-success",
-                    state && "bg-danger"
-                  )}
+                  className={cn("flex gap-1 rounded-lg text-xs bg-success")}
                 >
-                  {state ? (
-                    <TrendingDownIcon className="size-3" />
-                  ) : (
-                    <TrendingUpIcon className="size-3" />
-                  )}
+                  <TrendingUpIcon className="size-3" />
                   +4.5%
                 </Badge>
               </div>
