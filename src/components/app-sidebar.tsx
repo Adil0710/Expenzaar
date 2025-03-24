@@ -43,7 +43,7 @@ const data = {
     },
     {
       title: "Expenses",
-      url: "/dashboard/expense",
+      url: "/dashboard/expenses",
       icon: BookOpen,
     },
     {

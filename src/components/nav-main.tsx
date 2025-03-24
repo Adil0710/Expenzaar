@@ -2,7 +2,6 @@
 
 import { type LucideIcon } from "lucide-react";
 
-import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -11,6 +10,9 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { useState } from "react";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 export function NavMain({
   items,
@@ -22,6 +24,10 @@ export function NavMain({
     isActive?: boolean;
   }[];
 }) {
+  const pathname = usePathname();
+
+  const [active, setActive] = useState(false);
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
@@ -30,7 +36,10 @@ export function NavMain({
           <SidebarMenuItem key={item.title}>
             <Link href={item.url}>
               <SidebarMenuButton
-                className=" cursor-pointer"
+                className={cn(
+                  " cursor-pointer",
+                  pathname === item.url && "bg-accent"
+                )}
                 tooltip={item.title}
               >
                 {" "}

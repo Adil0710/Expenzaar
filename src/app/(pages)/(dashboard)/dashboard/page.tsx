@@ -1,27 +1,106 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/options";
+"use client"
+import { TrendingDownIcon, TrendingUpIcon } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 
-import { getServerSession } from "next-auth";
+export default function Page() {
 
-export default async function Page() {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    return <p>Please log in to access the dashboard.</p>;
-  }
+  const value = 120
+  const [state , setState] = useState(false)
   return (
-    <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-      <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-        <div className="bg-muted/50 aspect-video rounded-xl">
-          <h1>Welcome, {session.user?.name || "User"}!</h1>
-          <p>Your email: {session.user?.email}</p>
-        </div>
-        <div className="bg-muted/50 aspect-video rounded-xl" />
-        <div className="bg-muted/50 aspect-video rounded-xl" />
-      </div>
-      <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" />
+    <div className="*:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4 grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card lg:px-6">
+      <Card className="@container/card">
+        <CardHeader className="relative">
+          <CardDescription>Total Revenue</CardDescription>
+          <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
+            $1,250.00
+          </CardTitle>
+          <div className="absolute right-4 top-4">
+            <Badge variant="outline" className={cn("flex gap-1 bg-green-400/20 border border-green-700 text-green-700 dark:text-green-400 rounded-lg text-xs", !state && "bg-red-400/20 border border-red-400 text-red-500 dark:text-red-400")}>
+              <TrendingUpIcon className="size-3" />
+              +12.5%
+            </Badge>
+          </div>
+        </CardHeader>
+        <CardFooter className="flex-col items-start gap-1 text-sm">
+          <div className="line-clamp-1 flex gap-2 font-medium">
+            Trending up this month <TrendingUpIcon className="size-4" />
+          </div>
+          <div className="text-muted-foreground">
+            Visitors for the last 6 months
+          </div>
+        </CardFooter>
+      </Card>
+      <Card className="@container/card">
+        <CardHeader className="relative">
+          <CardDescription>New Customers</CardDescription>
+          <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
+            1,234
+          </CardTitle>
+          <div className="absolute right-4 top-4">
+            <Badge variant="outline" className="flex gap-1 rounded-lg text-xs">
+              <TrendingDownIcon className="size-3" />
+              -20%
+            </Badge>
+          </div>
+        </CardHeader>
+        <CardFooter className="flex-col items-start gap-1 text-sm">
+          <div className="line-clamp-1 flex gap-2 font-medium">
+            Down 20% this period <TrendingDownIcon className="size-4" />
+          </div>
+          <div className="text-muted-foreground">
+            Acquisition needs attention
+          </div>
+        </CardFooter>
+      </Card>
+      <Card className="@container/card">
+        <CardHeader className="relative">
+          <CardDescription>Active Accounts</CardDescription>
+          <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
+            45,678
+          </CardTitle>
+          <div className="absolute right-4 top-4">
+            <Badge variant="outline" className="flex gap-1 rounded-lg text-xs">
+              <TrendingUpIcon className="size-3" />
+              +12.5%
+            </Badge>
+          </div>
+        </CardHeader>
+        <CardFooter className="flex-col items-start gap-1 text-sm">
+          <div className="line-clamp-1 flex gap-2 font-medium">
+            Strong user retention <TrendingUpIcon className="size-4" />
+          </div>
+          <div className="text-muted-foreground">Engagement exceed targets</div>
+        </CardFooter>
+      </Card>
+      <Card className="@container/card">
+        <CardHeader className="relative">
+          <CardDescription>Growth Rate</CardDescription>
+          <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
+            4.5%
+          </CardTitle>
+          <div className="absolute right-4 top-4">
+            <Badge variant="outline" className="flex gap-1 rounded-lg text-xs">
+              <TrendingUpIcon className="size-3" />
+              +4.5%
+            </Badge>
+          </div>
+        </CardHeader>
+        <CardFooter className="flex-col items-start gap-1 text-sm">
+          <div className="line-clamp-1 flex gap-2 font-medium">
+            Steady performance <TrendingUpIcon className="size-4" />
+          </div>
+          <div className="text-muted-foreground">Meets growth projections</div>
+        </CardFooter>
+      </Card>
     </div>
   );
 }
-
-
-
