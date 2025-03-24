@@ -27,24 +27,18 @@ export function NavMain({
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
-          <Collapsible
-            key={item.title}
-            asChild
-            defaultOpen={item.isActive}
-            className="group/collapsible"
-          >
-            <SidebarMenuItem>
-              <CollapsibleTrigger asChild>
-                <Link href={item.url}>
-                  <SidebarMenuButton tooltip={item.title}>
-                    {" "}
-                    {item.icon && <item.icon />}
-                    <span>{item.title}</span>
-                  </SidebarMenuButton>
-                </Link>
-              </CollapsibleTrigger>
-            </SidebarMenuItem>
-          </Collapsible>
+          <SidebarMenuItem key={item.title}>
+            <Link href={item.url}>
+              <SidebarMenuButton
+                className=" cursor-pointer"
+                tooltip={item.title}
+              >
+                {" "}
+                {item.icon && <item.icon />}
+                <span>{item.title}</span>
+              </SidebarMenuButton>
+            </Link>
+          </SidebarMenuItem>
         ))}
       </SidebarMenu>
     </SidebarGroup>
