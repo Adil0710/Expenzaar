@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 export default function Dashboard() {
   const { profileLoading, profile, fetchProfile } = useProfileStore();
-  const { expensesLoading, expenses, fetchExpenses } = useExpensesStore();
+  const { expenses, fetchExpenses } = useExpensesStore();
   const [totalSpent, setTotalSpent] = useState(0);
   const [remainingBalance, setRemainingBalance] = useState(0);
   const [salary, setSalary] = useState(0);

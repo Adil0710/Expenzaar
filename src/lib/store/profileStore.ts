@@ -35,6 +35,7 @@ export const useProfileStore = create<ProfileState>((set) => ({
     try {
       const response = await axios.get("/api/profile");
       set({ profile: response.data, profileLoading: false });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       set({
         profileError: error.response?.data?.message || "Failed to load profile",
@@ -77,6 +78,7 @@ export const useProfileStore = create<ProfileState>((set) => ({
         return true;
       }
       throw new Error(response.data.message);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       set({
         profileError:
@@ -98,6 +100,7 @@ export const useProfileStore = create<ProfileState>((set) => ({
 
       set({ profileLoading: false });
       return response.data.success;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       set({
         profileError:

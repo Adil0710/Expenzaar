@@ -105,6 +105,7 @@ export function NavUser({
     updatePassword,
   } = useProfileStore();
   const { toast } = useToast();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [tabType, setTabType] = useState<"profile" | "password">("profile");
   const [showPassword, setShowPassword] = useState(false);
   const [newPassword, setNewPassword] = useState(false);
@@ -178,7 +179,7 @@ export function NavUser({
       });
     }
   };
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onPasswordSubmit = async (data: any) => {
     try {
       const success = await updatePassword({

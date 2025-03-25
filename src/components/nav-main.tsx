@@ -10,7 +10,6 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
@@ -26,7 +25,7 @@ export function NavMain({
 }) {
   const pathname = usePathname();
 
-  const [active, setActive] = useState(false);
+
 
   return (
     <SidebarGroup>
