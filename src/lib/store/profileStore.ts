@@ -1,7 +1,7 @@
 import axios from "axios";
 import { create } from "zustand";
 
-interface Profile {
+export interface Profile {
   user: {
     name: string;
     email: string;
@@ -46,17 +46,34 @@ export const useProfileStore = create<ProfileState>((set) => ({
     set({ profileLoading: true, profileError: null });
 
     try {
-      const response = await axios.put("/api/profile/update", updatedData);
+      // Ensure values are defined before updating state
+      const profileUpdatePayload = {
+        name: updatedData.user?.name ?? "",
+        email: updatedData.user?.email ?? "",
+        salary: updatedData.user?.salary ?? 0,
+      };
+
+      const response = await axios.put(
+        "/api/profile/update",
+        profileUpdatePayload
+      );
+
       if (response.data.success) {
-        // Update the local profile state with the new data
         set((state) => ({
-          profile: state.profile ? { ...state.profile, ...updatedData } : null,
+          profile: state.profile
+            ? {
+                ...state.profile,
+                user: {
+                  ...state.profile.user,
+                  ...profileUpdatePayload,
+                },
+              }
+            : null,
           profileLoading: false,
         }));
         return true;
       }
       throw new Error(response.data.message);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       set({
         profileError:
@@ -66,7 +83,6 @@ export const useProfileStore = create<ProfileState>((set) => ({
       return false;
     }
   },
-
   updatePassword: async (passwords) => {
     set({ profileLoading: true, profileError: null });
 

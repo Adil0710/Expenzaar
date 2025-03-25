@@ -44,8 +44,9 @@ import {
   profileUpdateSchema,
   passwordUpdateSchema,
 } from "@/schemas/profileSchema";
-import { useProfileStore } from "@/lib/store/profileStore";
+import { Profile, useProfileStore } from "@/lib/store/profileStore";
 import LoaderLine from "./loaderline";
+
 import { Button } from "./ui/button";
 import {
   Form,
@@ -121,7 +122,7 @@ export function NavUser({
   const onProfileSubmit = async (data: ProfileFormValues) => {
     try {
       // Transform the form data to match the Profile structure
-      const profileData = {
+      const profileData: Partial<Profile> = {
         user: {
           name: data.name,
           email: data.email,
@@ -130,6 +131,7 @@ export function NavUser({
         },
       };
 
+      console.log("here profile data", profileData);
       const success = await updateProfile(profileData);
       if (success) {
         toast({
@@ -186,7 +188,6 @@ export function NavUser({
   // Reset form with profile data when it's available
   useEffect(() => {
     if (profile && profile.user) {
-      console.log("Setting form values with profile.user:", profile.user);
       profileForm.reset({
         name: profile.user.name || "",
         email: profile.user.email || "",

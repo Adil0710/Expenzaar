@@ -40,16 +40,13 @@ export default function Dashboard() {
 
       // Calculate percentages
       const spentPercent = userSalary > 0 ? (total / userSalary) * 100 : 0;
-      const remainingPercent = userSalary > 0 ? (remaining / userSalary) * 100 : 0;
+      const remainingPercent =
+        userSalary > 0 ? (remaining / userSalary) * 100 : 0;
 
-      setSpentPercentage(parseFloat(spentPercent.toFixed(2)));
-      setRemainingPercentage(parseFloat(remainingPercent.toFixed(2)));
+      setSpentPercentage(parseFloat(spentPercent.toFixed(1)));
+      setRemainingPercentage(parseFloat(remainingPercent.toFixed(1)));
     }
   }, [profile, expenses]);
-
-  console.log(
-    `Salary: ${salary}, Total Spent: ${totalSpent}, Remaining: ${remainingBalance}, Spent %: ${spentPercentage.toFixed(2)}, Remaining %: ${remainingPercentage.toFixed(2)}`
-  );
 
   return (
     <div>

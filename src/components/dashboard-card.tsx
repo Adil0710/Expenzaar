@@ -1,5 +1,10 @@
 "use client";
-import { TrendingDownIcon, TrendingUpIcon } from "lucide-react";
+import {
+  ChartNoAxesCombined,
+
+  TrendingDownIcon,
+  TrendingUpIcon,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -19,7 +24,7 @@ interface CardProps {
   totalSpent: number;
   remainingBalance: number;
   spentPercentage: number;
-  remainingPercentage: number
+  remainingPercentage: number;
 }
 export default function DashboardCard({
   salary,
@@ -30,6 +35,11 @@ export default function DashboardCard({
   remainingPercentage,
 }: CardProps) {
   const isOverBudget = totalSpent > salary; // Check if over budget
+  const savingsRate = parseFloat(
+    ((remainingBalance / salary) * 100).toFixed(1)
+  );
+  const financialScore = Math.max(100 - (totalSpent / salary) * 100, 0);
+  console.log(financialScore);
 
   return (
     <div className="*:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4 grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card lg:px-6">
@@ -64,10 +74,58 @@ export default function DashboardCard({
             </CardHeader>
             <CardFooter className="flex-col items-start gap-1 text-sm">
               <div className="line-clamp-1 flex gap-2 font-medium">
-                Trending up this month <TrendingUpIcon className="size-4" />
+                {totalSpent > salary
+                  ? "Overspent this month"
+                  : "Trending up this month"}
+                {totalSpent > salary ? (
+                  <TrendingUpIcon className="size-4 text-danger" />
+                ) : (
+                  <TrendingDownIcon className="size-4" />
+                )}
               </div>
               <div className="text-muted-foreground">
-                Visitors for the last 6 months
+                Track expenses effectively
+              </div>
+            </CardFooter>
+          </Card>
+
+          <Card className="@container/card">
+            <CardHeader className="relative">
+              <CardDescription>Remaining Balance</CardDescription>
+              <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
+                ₹ {remainingBalance.toFixed(1)}
+              </CardTitle>
+              <div className="absolute right-4 top-5">
+                <Badge
+                  variant="outline"
+                  className={cn(
+                    "flex gap-1 rounded-lg text-xs",
+                    totalSpent > salary ? "bg-danger" : "bg-success"
+                  )}
+                >
+                  {totalSpent > salary ? (
+                    <TrendingDownIcon className="size-3" />
+                  ) : (
+                    <TrendingUpIcon className="size-3" />
+                  )}
+                  {totalSpent < salary && "+"}
+                  {remainingPercentage.toFixed(1)}%
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardFooter className="flex-col items-start gap-1 text-sm">
+              <div className="line-clamp-1 flex gap-2 font-medium">
+                {totalSpent > salary ? "Deficit Warning" : "Healthy Budget"}
+                {totalSpent > salary ? (
+                  <TrendingDownIcon className="size-4 text-danger" />
+                ) : (
+                  <TrendingUpIcon className="size-4 text-success" />
+                )}
+              </div>
+              <div className="text-muted-foreground">
+                {totalSpent > salary
+                  ? "Immediate action required!"
+                  : "Manage funds effectively"}
               </div>
             </CardFooter>
           </Card>
@@ -75,94 +133,84 @@ export default function DashboardCard({
             <CardHeader className="relative">
               <CardDescription>Total Spent</CardDescription>
               <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
-                ₹ {totalSpent}
+                ₹ {totalSpent.toFixed(1)}
               </CardTitle>
               <div className="absolute right-4 top-5">
                 <Badge
                   variant="outline"
                   className={cn(
                     "flex gap-1 rounded-lg text-xs",
-                    isOverBudget ? "bg-danger" : "bg-success"
+                    totalSpent > salary ? "bg-danger" : "bg-success"
                   )}
                 >
-                  {isOverBudget ? (
-                    <TrendingDownIcon className="size-3" />
-                  ) : (
+                  {totalSpent > salary ? (
                     <TrendingUpIcon className="size-3" />
+                  ) : (
+                    <TrendingDownIcon className="size-3" />
                   )}
-                  {isOverBudget
-                    ? `-${spentPercentage}%`
-                    : `+${spentPercentage}%`}
+                  {totalSpent > salary ? "-" : "+"}
+                  {spentPercentage.toFixed(1)}%
                 </Badge>
               </div>
             </CardHeader>
             <CardFooter className="flex-col items-start gap-1 text-sm">
               <div className="line-clamp-1 flex gap-2 font-medium">
-                {isOverBudget ? (
-                  <>
-                    Overspent this period{" "}
-                    <TrendingDownIcon className="size-4" />
-                  </>
+                {totalSpent > salary
+                  ? "Overspent this month"
+                  : "Spending under control"}
+                {totalSpent > salary ? (
+                  <TrendingUpIcon className="size-4 text-danger" />
                 ) : (
-                  <>
-                    Within budget <TrendingUpIcon className="size-4" />
-                  </>
+                  <TrendingDownIcon className="size-4 text-success" />
                 )}
               </div>
               <div className="text-muted-foreground">
-                {isOverBudget
-                  ? "Reduce expenses to balance budget"
-                  : "Good financial management"}
+                {totalSpent > salary
+                  ? "Exceeding budget!"
+                  : "Stable spending trend"}
               </div>
             </CardFooter>
           </Card>
+
           <Card className="@container/card">
             <CardHeader className="relative">
-              <CardDescription>Remaining Balance</CardDescription>
+              <CardDescription>Savings Rate</CardDescription>
               <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
-                ₹ {remainingBalance}
+                {salary > 0 ? `${savingsRate}%` : "0%"}
               </CardTitle>
               <div className="absolute right-4 top-5">
                 <Badge
                   variant="outline"
-                  className={cn("flex gap-1 rounded-lg text-xs bg-success")}
+                  className={cn(
+                    "flex gap-1 rounded-lg text-xs bg-danger",
+                    savingsRate > 0 && "bg-success"
+                  )}
                 >
-                  <TrendingDownIcon className="size-3" />
-                  +12.5%
+                  {savingsRate > 0 ? (
+                    <TrendingUpIcon className="size-3" />
+                  ) : (
+                    <TrendingDownIcon className="size-3" />
+                  )}
+                  {savingsRate > 0 && "+"}
+                  {savingsRate}%
                 </Badge>
               </div>
             </CardHeader>
             <CardFooter className="flex-col items-start gap-1 text-sm">
               <div className="line-clamp-1 flex gap-2 font-medium">
-                Strong user retention <TrendingUpIcon className="size-4" />
+                {savingsRate > 0 ? (
+                  <>
+                    Good Savings Trend{" "}
+                    <ChartNoAxesCombined className=" size-4" />{" "}
+                  </>
+                ) : (
+                  <>Try to Save More <TrendingDownIcon className=" size-4"/></>
+                )}
               </div>
               <div className="text-muted-foreground">
-                Engagement exceed targets
-              </div>
-            </CardFooter>
-          </Card>
-          <Card className="@container/card">
-            <CardHeader className="relative">
-              <CardDescription>Growth Rate</CardDescription>
-              <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
-                4.5%
-              </CardTitle>
-              <div className="absolute right-4 top-5">
-                <Badge
-                  variant="outline"
-                  className={cn("flex gap-1 rounded-lg text-xs bg-success")}
-                >
-                  <TrendingUpIcon className="size-3" />
-                  +4.5%
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardFooter className="flex-col items-start gap-1 text-sm">
-              <div className="line-clamp-1 flex gap-2 font-medium">
-                Steady performance <TrendingUpIcon className="size-4" />
-              </div>
-              <div className="text-muted-foreground">
-                Meets growth projections
+                {savingsRate > 0
+                  ? "You're building strong financial habits"
+                  : "Consider adjusting expenses"}
               </div>
             </CardFooter>
           </Card>
