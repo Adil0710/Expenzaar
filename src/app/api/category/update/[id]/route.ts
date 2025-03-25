@@ -57,13 +57,15 @@ export async function PUT(
       );
     }
 
-    const { name, limit } = await req.json();
+    const { name, limit, icon, color } = await req.json();
 
     // Prepare updated data object
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updateData: Record<string, any> = {};
     if (name) updateData.name = name;
     if (limit) updateData.limit = limit;
+    if (icon) updateData.icon = icon;
+    if (color) updateData.color = color;
 
     const updatedCategory = await prisma.category.update({
       where: { id: category.id },

@@ -55,7 +55,9 @@ model Category {
   userId        String
   user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   name          String
-  limit         Float     @default(0)     // Default limit as zero to indicate no limit
+  limit         Float     @default(0)                         // Default limit as zero to indicate no limit
+  color         String              // Store color as HEX or Tailwind color class
+  icon          String               // Store the icon name as a string
   expenses      Expense[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt

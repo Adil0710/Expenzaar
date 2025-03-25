@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { BookOpen, Sparkles, Settings2, LayoutDashboard } from "lucide-react";
+import { BookOpen, Sparkles, LayoutDashboard, Component } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
 
@@ -19,7 +19,6 @@ import Logo from "./logo";
 import { ModeToggle } from "@/components/mode-toggle";
 import { NavUser } from "./nav-user";
 import { Collapsible, CollapsibleTrigger } from "./ui/collapsible";
-
 
 const data = {
   user: {
@@ -47,14 +46,14 @@ const data = {
       icon: BookOpen,
     },
     {
+      title: "Categories",
+      url: "/dashboard/categories",
+      icon: Component,
+    },
+    {
       title: "AI",
       url: "#",
       icon: Sparkles,
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
     },
   ],
 };

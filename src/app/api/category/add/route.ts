@@ -33,7 +33,7 @@ export async function POST(req: Request) {
     }
 
     // Parse request body
-    const { name, limit } = await req.json();
+    const { name, limit, icon, color } = await req.json();
 
     if (!name) {
       return NextResponse.json(
@@ -67,6 +67,8 @@ export async function POST(req: Request) {
         userId: userId as string,
         name,
         limit: limit || 0, // Default to 0 if not provided
+        color,
+        icon
       },
     });
 

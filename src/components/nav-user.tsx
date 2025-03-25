@@ -76,13 +76,9 @@ import { Skeleton } from "./ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { cn } from "@/lib/utils";
 import { CaretSortIcon } from "@radix-ui/react-icons";
+import { ProfileFormValues } from "@/types/profile";
 
-type ProfileFormValues = {
-  name: string;
-  email: string;
-  salary?: number;
-  currencySymbol: string;
-};
+
 
 export function NavUser({
   user,
