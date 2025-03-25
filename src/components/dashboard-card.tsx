@@ -1,7 +1,6 @@
 "use client";
 import {
   ChartNoAxesCombined,
-
   TrendingDownIcon,
   TrendingUpIcon,
 } from "lucide-react";
@@ -25,6 +24,7 @@ interface CardProps {
   remainingBalance: number;
   spentPercentage: number;
   remainingPercentage: number;
+  currency: string;
 }
 export default function DashboardCard({
   salary,
@@ -33,13 +33,11 @@ export default function DashboardCard({
   remainingBalance,
   spentPercentage,
   remainingPercentage,
+  currency,
 }: CardProps) {
-  const isOverBudget = totalSpent > salary; // Check if over budget
   const savingsRate = parseFloat(
     ((remainingBalance / salary) * 100).toFixed(1)
   );
-  const financialScore = Math.max(100 - (totalSpent / salary) * 100, 0);
-  console.log(financialScore);
 
   return (
     <div className="*:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4 grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card lg:px-6">
@@ -69,7 +67,7 @@ export default function DashboardCard({
             <CardHeader className="relative">
               <CardDescription>Total Salary / Budget</CardDescription>
               <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
-                ₹ {salary}
+                {currency} {salary}
               </CardTitle>
             </CardHeader>
             <CardFooter className="flex-col items-start gap-1 text-sm">
@@ -93,7 +91,7 @@ export default function DashboardCard({
             <CardHeader className="relative">
               <CardDescription>Remaining Balance</CardDescription>
               <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
-                ₹ {remainingBalance.toFixed(1)}
+                {currency} {remainingBalance.toFixed(1)}
               </CardTitle>
               <div className="absolute right-4 top-5">
                 <Badge
@@ -133,7 +131,7 @@ export default function DashboardCard({
             <CardHeader className="relative">
               <CardDescription>Total Spent</CardDescription>
               <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
-                ₹ {totalSpent.toFixed(1)}
+                {currency} {totalSpent.toFixed(1)}
               </CardTitle>
               <div className="absolute right-4 top-5">
                 <Badge
@@ -204,7 +202,9 @@ export default function DashboardCard({
                     <ChartNoAxesCombined className=" size-4" />{" "}
                   </>
                 ) : (
-                  <>Try to Save More <TrendingDownIcon className=" size-4"/></>
+                  <>
+                    Try to Save More <TrendingDownIcon className=" size-4" />
+                  </>
                 )}
               </div>
               <div className="text-muted-foreground">

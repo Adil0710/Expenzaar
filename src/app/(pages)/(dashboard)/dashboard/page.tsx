@@ -47,7 +47,7 @@ export default function Dashboard() {
       setRemainingPercentage(parseFloat(remainingPercent.toFixed(1)));
     }
   }, [profile, expenses]);
-
+  const currency = profile?.user.currencySymbol || "$";
   return (
     <div>
       <DashboardCard
@@ -57,6 +57,7 @@ export default function Dashboard() {
         remainingBalance={remainingBalance}
         spentPercentage={spentPercentage}
         remainingPercentage={remainingPercentage}
+        currency={currency}
       />
     </div>
   );

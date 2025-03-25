@@ -20,6 +20,10 @@ model User {
   password      String?
   name          String
   salary        Float?
+  currencyCode  String?   // e.g., "USD", "INR"
+  currencySymbol String?  // e.g., "$", "₹"
+  forgotPasswordOTP String?
+  verifyOTPExpiry DateTime?
   expenses      Expense[]
   categories    Category[]
   createdAt     DateTime  @default(now())

@@ -7,6 +7,8 @@ export interface Profile {
     email: string;
     salary: number;
     createdAt: string;
+    currencySymbol: string;
+    currencyCode: string;
   };
 }
 
@@ -33,7 +35,6 @@ export const useProfileStore = create<ProfileState>((set) => ({
     try {
       const response = await axios.get("/api/profile");
       set({ profile: response.data, profileLoading: false });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       set({
         profileError: error.response?.data?.message || "Failed to load profile",
@@ -46,11 +47,13 @@ export const useProfileStore = create<ProfileState>((set) => ({
     set({ profileLoading: true, profileError: null });
 
     try {
-      // Ensure values are defined before updating state
+      // Include currency information in the update payload
       const profileUpdatePayload = {
         name: updatedData.user?.name ?? "",
         email: updatedData.user?.email ?? "",
         salary: updatedData.user?.salary ?? 0,
+        currencySymbol: updatedData.user?.currencySymbol,
+        currencyCode: updatedData.user?.currencyCode,
       };
 
       const response = await axios.put(
@@ -65,7 +68,7 @@ export const useProfileStore = create<ProfileState>((set) => ({
                 ...state.profile,
                 user: {
                   ...state.profile.user,
-                  ...profileUpdatePayload,
+                  ...updatedData.user, // Use the full updatedData.user to preserve all fields
                 },
               }
             : null,
@@ -83,6 +86,7 @@ export const useProfileStore = create<ProfileState>((set) => ({
       return false;
     }
   },
+
   updatePassword: async (passwords) => {
     set({ profileLoading: true, profileError: null });
 
@@ -94,7 +98,6 @@ export const useProfileStore = create<ProfileState>((set) => ({
 
       set({ profileLoading: false });
       return response.data.success;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       set({
         profileError:

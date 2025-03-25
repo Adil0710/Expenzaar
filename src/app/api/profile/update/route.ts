@@ -45,7 +45,15 @@ export async function PUT(req: Request) {
 
     // Parse request body
     const body = await req.json();
-    const { name, email, salary, currentPassword, newPassword } = body;
+    const {
+      name,
+      email,
+      salary,
+      currencyCode,
+      currencySymbol,
+      currentPassword,
+      newPassword,
+    } = body;
 
     // If updating password, verify current password
     if (currentPassword && newPassword) {
@@ -55,7 +63,10 @@ export async function PUT(req: Request) {
           { status: 400 }
         );
       }
-      const isValidPassword = await bcrypt.compare(currentPassword, user.password);
+      const isValidPassword = await bcrypt.compare(
+        currentPassword,
+        user.password
+      );
       if (!isValidPassword) {
         return NextResponse.json(
           { success: false, message: "Current password is incorrect" },
@@ -69,7 +80,9 @@ export async function PUT(req: Request) {
 
     if (name) updateData.name = name;
     if (email) updateData.email = email;
-    if (typeof salary !== 'undefined') updateData.salary = salary;
+    if (typeof salary !== "undefined") updateData.salary = salary;
+    if (currencyCode) updateData.currencyCode = currencyCode;
+    if (currencySymbol) updateData.currencySymbol = currencySymbol;
     if (newPassword) {
       updateData.password = await bcrypt.hash(newPassword, 10);
     }
@@ -83,6 +96,8 @@ export async function PUT(req: Request) {
         name: true,
         email: true,
         salary: true,
+        currencyCode: true,
+        currencySymbol: true,
         createdAt: true,
       },
     });
