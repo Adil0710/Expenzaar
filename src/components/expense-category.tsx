@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 import { BookOpen, Component, Plus } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
-import { cn } from "@/lib/utils";
+
 import CategoryForm from "./category-form";
 import { Category } from "@/lib/store/categoriesStore";
 

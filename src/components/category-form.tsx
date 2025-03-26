@@ -15,7 +15,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import {
-  Categories,
   Category,
   useCategoriesStore,
 } from "@/lib/store/categoriesStore";
