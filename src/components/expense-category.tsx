@@ -1,74 +1,53 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { BookOpen, Component, Plus } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
 import { cn } from "@/lib/utils";
 import CategoryForm from "./category-form";
+import { Category } from "@/lib/store/categoriesStore";
+
 interface ExpenseCategoryProps {
   defaultTab: "category" | "expense";
   tabName: "Category" | "Expense";
+  selectedCategory?: Category | null;
+  onClose?: () => void;
 }
 
 export default function ExpenseCategory({
   defaultTab,
   tabName,
+  selectedCategory,
+  onClose,
 }: ExpenseCategoryProps) {
   const [isOpen, setIsOpen] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [tabType, setTabType] = useState<"category" | "expense">(defaultTab);
+
+  // Handle closing the dialog
+  const handleClose = () => {
+    setIsOpen(false);
+    onClose?.(); // Reset selectedCategory in the parent
+  };
+
+  // Open the dialog when a category is selected for editing
+  useEffect(() => {
+    if (selectedCategory) {
+      setIsOpen(true);
+    }
+  }, [selectedCategory]);
+
   return (
     <div>
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
         <DialogTrigger asChild>
-          <Button>
+          <Button onClick={() => setIsOpen(true)}>
             <Plus /> Add {tabName}
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
-          <Tabs
-            value={tabType}
-            onValueChange={(value) =>
-              setTabType(value as "category" | "expense")
-            }
-          >
-            <TabsList
-              className={cn(
-                "grid w-[90%] max-w-2xl mx-auto grid-cols-2 mb-6 pb-8"
-              )}
-            >
+          <Tabs value={tabType} onValueChange={(value) => setTabType(value as "category" | "expense")}>
+            <TabsList className="grid w-[90%] max-w-2xl mx-auto grid-cols-2 mb-6 pb-8">
               <TabsTrigger value="expense" className="cursor-pointer">
                 <BookOpen className="mr-2" size={20} />
                 Expense
@@ -78,7 +57,8 @@ export default function ExpenseCategory({
                 Category
               </TabsTrigger>
             </TabsList>
-            <CategoryForm />
+            {/* Pass handleClose to close after adding/updating */}
+            <CategoryForm selectedCategory={selectedCategory} onUpdate={handleClose} />
           </Tabs>
         </DialogContent>
       </Dialog>

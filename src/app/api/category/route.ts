@@ -39,6 +39,8 @@ export async function GET(req: Request) {
         limit: true,
         icon: true,
         color: true,
+        createdAt: true,
+        updatedAt: true,
         expenses: {
           where: {
             createdAt: {

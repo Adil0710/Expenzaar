@@ -10,12 +10,14 @@ declare module "next-auth" {
     user: {
       id: string;
       googleAccount: boolean;
+      currencySymbol?: string;
     } & DefaultSession["user"];
   }
 
   interface User {
     id: string;
     googleAccount: boolean;
+    currencySymbol?: string;
   }
 }
 
@@ -107,6 +109,7 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id as string;
         session.user.name = token.name as string;
         session.user.googleAccount = token.googleAccount as boolean;
+        session.user.currencySymbol = token.currencySymbol as string
       }
 
       return session;
@@ -117,6 +120,7 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.name = user.name;
         token.googleAccount = user.googleAccount || false;
+        token.currencySymbol = user.currencySymbol
       }
 
       return token;

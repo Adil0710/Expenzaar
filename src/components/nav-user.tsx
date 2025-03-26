@@ -78,8 +78,6 @@ import { cn } from "@/lib/utils";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { ProfileFormValues } from "@/types/profile";
 
-
-
 export function NavUser({
   user,
 }: {
