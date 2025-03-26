@@ -6,9 +6,9 @@ import { cn } from "@/lib/utils";
 const Progress = React.forwardRef<
   React.ElementRef<typeof ProgressPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root> & {
-    categoryColor?: string;
+
   }
->(({ className, value, categoryColor, ...props }, ref) => {
+>(({ className, value, ...props }, ref) => {
   // Ensure the value doesn't exceed 100
   const safeValue = Math.min(value || 0, 100);
 

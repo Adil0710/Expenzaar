@@ -181,8 +181,8 @@ export default function CategoriesPage() {
                                 Delete Category
                               </AlertDialogTitle>
                               <AlertDialogDescription>
-                                Are you sure you want to delete the "
-                                {category.name}" category? This action cannot be
+                                Are you sure you want to delete the &quot;
+                                {category.name}&quot; category? This action cannot be
                                 undone.
                               </AlertDialogDescription>
                             </AlertDialogHeader>

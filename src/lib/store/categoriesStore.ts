@@ -39,6 +39,7 @@ export const useCategoriesStore = create<CategoriesState>((set) => ({
       const response = await axios.get("/api/category");
 
       set({ categories: response.data, categoriesLoading: false });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       set({
         categoriesError:
@@ -67,6 +68,7 @@ export const useCategoriesStore = create<CategoriesState>((set) => ({
         return true;
       }
       throw new Error(response.data.message);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       set({
         categoriesError:
@@ -100,6 +102,7 @@ export const useCategoriesStore = create<CategoriesState>((set) => ({
         return true;
       }
       throw new Error(response.data.message);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       set({
         categoriesError:
@@ -128,6 +131,7 @@ export const useCategoriesStore = create<CategoriesState>((set) => ({
         return true;
       }
       throw new Error(response.data.message);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       set({
         categoriesError:
