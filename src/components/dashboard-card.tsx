@@ -18,7 +18,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 interface CardProps {
   salary: number;
-  profileLoading: boolean;
+  profileLoading?: boolean;
   totalSpent: number;
   remainingBalance: number;
   spentPercentage: number;
@@ -35,8 +35,8 @@ export default function DashboardCard({
   currency,
 }: CardProps) {
   const savingsRate = parseFloat(
-    ((remainingBalance / salary) * 100).toFixed(1)
-  );
+    ((remainingBalance / salary) * 100).toFixed(1) 
+  ) | 0;
 
   return (
     <div className="*:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4 grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card lg:px-6">

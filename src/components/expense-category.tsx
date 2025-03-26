@@ -13,7 +13,7 @@ interface ExpenseCategoryProps {
   tabName: "Category" | "Expense";
   selectedCategory?: Category | null;
   onClose?: () => void;
-  disabled: boolean
+  disabled?: boolean
 }
 
 export default function ExpenseCategory({

@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
+import SVGNotFound from "@/components/SVG/notfound";
 
 export default function CategoriesPage() {
   const { data: session } = useSession();
@@ -121,7 +122,10 @@ export default function CategoriesPage() {
             </Card>
           ))
         ) : (categories?.categories?.length ?? 0) === 0 ? (
-          <div className=" absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 ">No categories found</div>
+          <div className=" absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 flex flex-col justify-center items-center gap-10 ">
+            <SVGNotFound className=" w-80 h-80" />
+            <span className=" text-2xl ml-10 font-semibold"> No categories found</span>
+          </div>
         ) : (
           categories?.categories?.map((category) => {
             if (!category) return null; // Prevents undefined errors
