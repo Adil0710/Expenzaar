@@ -13,6 +13,7 @@ interface ExpenseCategoryProps {
   tabName: "Category" | "Expense";
   selectedCategory?: Category | null;
   onClose?: () => void;
+  disabled: boolean
 }
 
 export default function ExpenseCategory({
@@ -20,6 +21,7 @@ export default function ExpenseCategory({
   tabName,
   selectedCategory,
   onClose,
+  disabled
 }: ExpenseCategoryProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [tabType, setTabType] = useState<"category" | "expense">(defaultTab);
@@ -41,7 +43,7 @@ export default function ExpenseCategory({
     <div>
       <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
         <DialogTrigger asChild>
-          <Button onClick={() => setIsOpen(true)}>
+          <Button onClick={() => setIsOpen(true)} disabled={disabled}>
             <Plus /> Add {tabName}
           </Button>
         </DialogTrigger>
