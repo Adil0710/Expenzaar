@@ -5,13 +5,7 @@ import {
   useCategoriesStore,
 } from "@/lib/store/categoriesStore";
 import React, { useEffect, useState } from "react";
-import {
-  Card,
-
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import * as Icons from "lucide-react";
 
 import { cn, formatTimestamp } from "@/lib/utils";
@@ -150,7 +144,7 @@ export default function CategoriesPage() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div
-                          className="rounded-xl p-2.5 transition-colors"
+                          className="rounded-xl sm:p-2.5 p-2 transition-colors"
                           style={{
                             backgroundColor: `${category.color}20`,
                             border: `1px solid ${category.color}40`,
@@ -158,7 +152,7 @@ export default function CategoriesPage() {
                         >
                           <LucideIcon color={category.color} size={24} />
                         </div>
-                        <CardTitle className="text-2xl font-semibold capitalize">
+                        <CardTitle className="sm:text-2xl text-xl font-semibold capitalize">
                           {category.name}
                         </CardTitle>
                       </div>
@@ -166,7 +160,7 @@ export default function CategoriesPage() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100 cursor-pointer"
+                          className="h-8 w-8 opacity-100 sm:opacity-0 transition-opacity group-hover:opacity-100 cursor-pointer"
                           onClick={() => handleEdit(category)}
                         >
                           <Pencil className="h-4 w-4" />
@@ -176,7 +170,7 @@ export default function CategoriesPage() {
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-destructive/10 dark:hover:bg-destructive/10 hover:text-destructive cursor-pointer"
+                              className="h-8 w-8 opacity-100 sm:opacity-0 transition-opacity group-hover:opacity-100 hover:bg-destructive/10 dark:hover:bg-destructive/10 hover:text-destructive cursor-pointer"
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
