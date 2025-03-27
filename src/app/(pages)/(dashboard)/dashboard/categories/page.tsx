@@ -1,18 +1,16 @@
-"use client";
-import ExpenseCategory from "@/components/expense-category";
-import {
-  Category as CategoryType,
-  useCategoriesStore,
-} from "@/lib/store/categoriesStore";
-import React, { useEffect, useState } from "react";
-import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import * as Icons from "lucide-react";
+"use client"
+import ExpenseCategory from "@/components/expense-category"
+import { type Category as CategoryType, useCategoriesStore } from "@/lib/store/categoriesStore"
+import type React from "react"
+import { useEffect, useState } from "react"
+import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import * as Icons from "lucide-react"
 
-import { cn, formatTimestamp } from "@/lib/utils";
-import { useSession } from "next-auth/react";
+import { cn, formatTimestamp } from "@/lib/utils"
+import { useSession } from "next-auth/react"
 
-import { Button } from "@/components/ui/button";
-import { Pencil, Trash2, Clock, CalendarDays } from "lucide-react";
+import { Button } from "@/components/ui/button"
+import { Pencil, Trash2, Clock, CalendarDays, RefreshCcw } from "lucide-react"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,46 +21,68 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Progress } from "@/components/ui/progress";
-import { Skeleton } from "@/components/ui/skeleton";
-import SVGNotFound from "@/components/SVG/notfound";
-import ArrowSVG from "@/components/SVG/arrow";
-import SVGError from "@/components/SVG/error";
+} from "@/components/ui/alert-dialog"
+import { Progress } from "@/components/ui/progress"
+import { Skeleton } from "@/components/ui/skeleton"
+import SVGNotFound from "@/components/SVG/notfound"
+import ArrowSVG from "@/components/SVG/arrow"
+import SVGError from "@/components/SVG/error"
+import { Pagination } from "@/components/pagination"
+
 
 export default function CategoriesPage() {
-  const { data: session } = useSession();
-  const { fetchCategories, categoriesLoading, categories, deleteCategory, categoriesError } =
-    useCategoriesStore();
+  const { data: session } = useSession()
+  const {
+    fetchCategories,
+    categoriesLoading,
+    categories,
+    deleteCategory,
+    categoriesError,
+    pagination,
+    setPage,
+    setPageSize,
+    allCategories,
+  } = useCategoriesStore()
 
-  const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(
-    null
-  );
+  const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(null)
 
   const loggedUser = {
     currencySymbol: session?.user.currencySymbol || "$",
-  };
+  }
 
   useEffect(() => {
-    fetchCategories();
-  }, []);
+    fetchCategories()
+  }, [])
 
   const handleDelete = async (categoryId: string) => {
-    await deleteCategory(categoryId);
-    fetchCategories();
-  };
+    await deleteCategory(categoryId)
+  }
 
   const handleEdit = (category: CategoryType) => {
-    setSelectedCategory(category);
-  };
+    setSelectedCategory(category)
+  }
 
   const handleDialogClose = () => {
-    setSelectedCategory(null);
-  };
+    setSelectedCategory(null)
+  }
+
+  const handlePageChange = (page: number) => {
+    setPage(page)
+  }
+
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size)
+  }
+
+  // Check if we have any categories (either in the current page or in all categories)
+  const hasCategories = (categories?.categories?.length ?? 0) > 0 || allCategories.length > 0
 
   return (
     <div>
-      <div className="flex flex-row items-end w-full px-4 lg:px-6 justify-end">
+      <div className="flex flex-row items-end w-full px-4 lg:px-6 justify-between">
+        <div className="flex items-center">
+          <h1 className="text-2xl font-bold tracking-tight">Categories</h1>
+        </div>
         <ExpenseCategory
           defaultTab="category"
           tabName="Category"
@@ -71,9 +91,10 @@ export default function CategoriesPage() {
           disabled={categoriesLoading}
         />
       </div>
+
       <div className="*:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4 grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card lg:px-6 mt-5">
         {categoriesLoading || !categories?.categories ? (
-          Array.from({ length: 4 }).map((_, i) => (
+          Array.from({ length: pagination.pageSize }).map((_, i) => (
             <Card
               key={i}
               className="@container/card max-w-sm group relative overflow-hidden transition-all duration-300 hover:shadow-lg"
@@ -130,8 +151,8 @@ export default function CategoriesPage() {
             <span className="text-xl -mt-10 font-semibold">
               {categoriesError || "A network error occurred, please try again"}
             </span>
-            <Button onClick={fetchCategories}>
-              <Icons.RefreshCcw className="mr-2" /> Try Again
+            <Button onClick={() => fetchCategories()}>
+              <RefreshCcw className="mr-2" /> Try Again
             </Button>
           </div>
         ) : (categories?.categories?.length ?? 0) === 0 ? (
@@ -139,27 +160,19 @@ export default function CategoriesPage() {
             <ArrowSVG className=" absolute sm:right-[17%] sm:top-[22%] sm:-translate-y-[22%] sm:-translate-x-[17%] sm:rotate-[12deg] sm:w-44 w-16 right-16 top-20 -rotate-[25deg]" />
             <div className=" absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 flex flex-col justify-center items-center gap-10 ">
               <SVGNotFound className=" w-80 h-80" />
-              <span className=" text-xl ml-10 font-semibold">
-                {" "}
-                No categories found
-              </span>
+              <span className=" text-xl ml-10 font-semibold"> No categories found</span>
             </div>
           </>
         ) : (
           categories?.categories?.map((category) => {
-            if (!category) return null; // Prevents undefined errors
-            const LucideIcon = Icons[
-              category?.icon as keyof typeof Icons
-            ] as React.ElementType;
+            if (!category) return null // Prevents undefined errors
+            const LucideIcon = Icons[category?.icon as keyof typeof Icons] as React.ElementType
 
-            const spentAmount =
-              (category?.limit ?? 0) - (category?.remaining ?? 0);
+            const spentAmount = (category?.limit ?? 0) - (category?.remaining ?? 0)
 
-            const spentPercentage = category?.limit
-              ? (spentAmount / category.limit) * 100
-              : 0;
+            const spentPercentage = category?.limit ? (spentAmount / category.limit) * 100 : 0
 
-            const isOverBudget = (category.remaining ?? 0) < 0;
+            const isOverBudget = (category.remaining ?? 0) < 0
 
             return (
               <Card
@@ -179,9 +192,7 @@ export default function CategoriesPage() {
                       >
                         <LucideIcon color={category.color} size={24} />
                       </div>
-                      <CardTitle className="sm:text-2xl text-xl font-semibold capitalize">
-                        {category.name}
-                      </CardTitle>
+                      <CardTitle className="sm:text-2xl text-xl font-semibold capitalize">{category.name}</CardTitle>
                     </div>
                     <div className="flex gap-1">
                       <Button
@@ -207,17 +218,12 @@ export default function CategoriesPage() {
                             <AlertDialogTitle>Delete Category</AlertDialogTitle>
                             <AlertDialogDescription>
                               Are you sure you want to delete the &quot;
-                              {category.name}&quot; category? This action cannot
-                              be undone.
+                              {category.name}&quot; category? This action cannot be undone.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={() => handleDelete(category.id)}
-                            >
-                              Delete
-                            </AlertDialogAction>
+                            <AlertDialogAction onClick={() => handleDelete(category.id)}>Delete</AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
                       </AlertDialog>
@@ -226,45 +232,31 @@ export default function CategoriesPage() {
 
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">
-                        Budget Usage
-                      </span>
-                      <span
-                        className={cn(
-                          "text-sm font-medium",
-                          isOverBudget ? "text-destructive" : "text-primary"
-                        )}
-                      >
+                      <span className="text-sm text-muted-foreground">Budget Usage</span>
+                      <span className={cn("text-sm font-medium", isOverBudget ? "text-destructive" : "text-primary")}>
                         {spentPercentage.toFixed(1)}%
                       </span>
                     </div>
                     <Progress
                       value={spentPercentage}
-                      className={cn(
-                        "h-2",
-                        isOverBudget ? "text-destructive" : "text-primary"
-                      )}
+                      className={cn("h-2", isOverBudget ? "text-destructive" : "text-primary")}
                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <span className="text-sm text-muted-foreground">
-                        Limit
-                      </span>
+                      <span className="text-sm text-muted-foreground">Limit</span>
                       <p className="text-xl font-semibold tabular-nums">
                         {loggedUser.currencySymbol}
                         {category.limit}
                       </p>
                     </div>
                     <div className="space-y-1.5">
-                      <span className="text-sm text-muted-foreground">
-                        Remaining
-                      </span>
+                      <span className="text-sm text-muted-foreground">Remaining</span>
                       <p
                         className={cn(
                           "text-xl font-semibold tabular-nums",
-                          isOverBudget ? "text-destructive" : "text-primary"
+                          isOverBudget ? "text-destructive" : "text-primary",
                         )}
                       >
                         {loggedUser.currencySymbol}
@@ -285,10 +277,25 @@ export default function CategoriesPage() {
                   </div>
                 </CardFooter>
               </Card>
-            );
+            )
           })
         )}
       </div>
+
+      {/* Pagination controls - only show if we have categories */}
+      {hasCategories && !categoriesLoading && !categoriesError && (
+        <div className="px-4 lg:px-6 mt-6 mb-8">
+          <Pagination
+            currentPage={pagination.page}
+            totalPages={pagination.totalPages}
+            pageSize={pagination.pageSize}
+            onPageChange={handlePageChange}
+            onPageSizeChange={handlePageSizeChange}
+            isLoading={categoriesLoading}
+          />
+        </div>
+      )}
     </div>
-  );
+  )
 }
+
