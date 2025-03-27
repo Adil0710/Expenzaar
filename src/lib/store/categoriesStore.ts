@@ -200,7 +200,7 @@ export const useCategoriesStore = create<CategoriesState>((set, get) => ({
             : category
         );
 
-        set((state) => ({
+        set(() => ({
           allCategories: updatedAllCategories,
           categoriesLoading: false,
         }));
