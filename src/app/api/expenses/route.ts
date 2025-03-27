@@ -38,6 +38,8 @@ export async function GET(req: Request) {
           select: {
             name: true,
             limit: true,
+            color: true,
+            icon:true
           },
         },
       },
