@@ -56,7 +56,7 @@ export const useCategoriesStore = create<CategoriesState>((set, get) => ({
   setPageSize: (size) => {
     const allCats = get().allCategories;
     const totalPages = Math.ceil(allCats.length / size);
-    
+
     set((state) => ({
       pagination: {
         ...state.pagination,
@@ -66,22 +66,29 @@ export const useCategoriesStore = create<CategoriesState>((set, get) => ({
       },
       // Update the paginated view
       categories: {
-        categories: allCats.slice(0, size)
-      }
+        categories: allCats.slice(0, size),
+      },
     }));
   },
 
   // Set current page
   setPage: (page) => {
+    const { pageSize } = get().pagination;
+    const allCats = get().allCategories;
+
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginatedCategories = allCats.slice(startIndex, endIndex);
+
     set((state) => ({
       pagination: {
         ...state.pagination,
         page,
       },
-      // Update the paginated view
+      // Update the paginated view with the correct slice
       categories: {
-        categories: get().getPaginatedCategories()
-      }
+        categories: paginatedCategories,
+      },
     }));
   },
 
@@ -89,10 +96,10 @@ export const useCategoriesStore = create<CategoriesState>((set, get) => ({
   getPaginatedCategories: () => {
     const { page, pageSize } = get().pagination;
     const allCats = get().allCategories;
-    
+
     const startIndex = (page - 1) * pageSize;
     const endIndex = startIndex + pageSize;
-    
+
     return allCats.slice(startIndex, endIndex);
   },
 
@@ -101,28 +108,36 @@ export const useCategoriesStore = create<CategoriesState>((set, get) => ({
     try {
       const response = await axios.get("/api/category");
       const allCategories = response.data.categories;
-      
+
       // Calculate total pages
       const { pageSize } = get().pagination;
       const totalPages = Math.ceil(allCategories.length / pageSize);
-      
+
       // Get current page of categories
       const currentPage = get().pagination.page;
       const startIndex = (currentPage - 1) * pageSize;
       const endIndex = startIndex + pageSize;
       const paginatedCategories = allCategories.slice(startIndex, endIndex);
-      
-      set({ 
+
+      set({
         allCategories,
-        categories: { 
-          categories: paginatedCategories 
-        }, 
+        categories: {
+          categories: paginatedCategories,
+        },
         categoriesLoading: false,
         pagination: {
           ...get().pagination,
-          totalPages
-        }
+          totalPages,
+          // Reset to page 1 if current page is beyond total pages
+          page: currentPage > totalPages && totalPages > 0 ? 1 : currentPage,
+        },
       });
+
+      // If we reset to page 1, update the paginated view
+      if (currentPage > totalPages && totalPages > 0) {
+        get().setPage(1);
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       set({
         categoriesError:
@@ -140,25 +155,26 @@ export const useCategoriesStore = create<CategoriesState>((set, get) => ({
         // Add to all categories
         const newCategory = response.data.category;
         const updatedAllCategories = [newCategory, ...get().allCategories];
-        
+
         // Recalculate pagination
         const { pageSize } = get().pagination;
         const totalPages = Math.ceil(updatedAllCategories.length / pageSize);
-        
+
         set((state) => ({
           allCategories: updatedAllCategories,
           pagination: {
             ...state.pagination,
-            totalPages
+            totalPages,
           },
           categoriesLoading: false,
         }));
-        
+
         // Update current page view
         get().setPage(1); // Go to first page to see the new category
         return true;
       }
       throw new Error(response.data.message);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       set({
         categoriesError:
@@ -183,18 +199,19 @@ export const useCategoriesStore = create<CategoriesState>((set, get) => ({
             ? { ...category, ...updatedData }
             : category
         );
-        
+
         set((state) => ({
           allCategories: updatedAllCategories,
           categoriesLoading: false,
         }));
-        
+
         // Update current page view
         const currentPage = get().pagination.page;
         get().setPage(currentPage);
         return true;
       }
       throw new Error(response.data.message);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       set({
         categoriesError:
@@ -214,32 +231,33 @@ export const useCategoriesStore = create<CategoriesState>((set, get) => ({
         const updatedAllCategories = get().allCategories.filter(
           (category) => category.id !== categoryId
         );
-        
+
         // Recalculate pagination
         const { pageSize, page } = get().pagination;
         const totalPages = Math.ceil(updatedAllCategories.length / pageSize);
-        
+
         // Determine if we need to go to previous page
         let newPage = page;
         if (page > totalPages && totalPages > 0) {
           newPage = totalPages;
         }
-        
+
         set((state) => ({
           allCategories: updatedAllCategories,
           pagination: {
             ...state.pagination,
             totalPages,
-            page: newPage
+            page: newPage,
           },
           categoriesLoading: false,
         }));
-        
+
         // Update current page view
         get().setPage(newPage);
         return true;
       }
       throw new Error(response.data.message);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       set({
         categoriesError:

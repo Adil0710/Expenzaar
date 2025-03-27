@@ -29,7 +29,6 @@ import ArrowSVG from "@/components/SVG/arrow"
 import SVGError from "@/components/SVG/error"
 import { Pagination } from "@/components/pagination"
 
-
 export default function CategoriesPage() {
   const { data: session } = useSession()
   const {
@@ -293,6 +292,14 @@ export default function CategoriesPage() {
             onPageSizeChange={handlePageSizeChange}
             isLoading={categoriesLoading}
           />
+          {/* Uncomment this for debugging
+          <div className="text-xs text-muted-foreground mt-2">
+            Total categories: {allCategories.length} | 
+            Current page: {pagination.page} of {pagination.totalPages} | 
+            Items per page: {pagination.pageSize} |
+            Showing: {categories?.categories?.length} items
+          </div>
+          */}
         </div>
       )}
     </div>

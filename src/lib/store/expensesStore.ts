@@ -23,7 +23,10 @@ interface ExpensesState {
   expensesError: string | null;
   fetchExpenses: () => Promise<void>;
   addExpense: (addedData: Partial<Expense>) => Promise<boolean>;
-  updateExpense: (updatedData: Partial<Expense>, expenseId: string) => Promise<boolean>;
+  updateExpense: (
+    updatedData: Partial<Expense>,
+    expenseId: string
+  ) => Promise<boolean>;
   deleteExpense: (expenseId: string) => Promise<boolean>;
 }
 
@@ -38,9 +41,11 @@ export const useExpensesStore = create<ExpensesState>((set) => ({
     try {
       const response = await axios.get("/api/expenses");
       set({ expenses: response.data.expenses, expensesLoading: false });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       set({
-        expensesError: error.response?.data?.message || "Failed to load expenses",
+        expensesError:
+          error.response?.data?.message || "Failed to load expenses",
         expensesLoading: false,
       });
     }
@@ -53,12 +58,15 @@ export const useExpensesStore = create<ExpensesState>((set) => ({
       const response = await axios.post("/api/expenses/add", addedData);
       if (response.data.success) {
         set((state) => ({
-          expenses: state.expenses ? [...state.expenses, response.data.expense] : [response.data.expense],
+          expenses: state.expenses
+            ? [...state.expenses, response.data.expense]
+            : [response.data.expense],
           expensesLoading: false,
         }));
         return true;
       }
       throw new Error(response.data.message);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       set({
         expensesError: error.response?.data?.message || "Failed to add expense",
@@ -72,12 +80,17 @@ export const useExpensesStore = create<ExpensesState>((set) => ({
     set({ expensesLoading: true, expensesError: null });
 
     try {
-      const response = await axios.put(`/api/expenses/update/${expenseId}`, updatedData);
+      const response = await axios.put(
+        `/api/expenses/update/${expenseId}`,
+        updatedData
+      );
       if (response.data.success) {
         set((state) => ({
           expenses: state.expenses
             ? state.expenses.map((expense) =>
-                expense.id === expenseId ? { ...expense, ...updatedData } : expense
+                expense.id === expenseId
+                  ? { ...expense, ...updatedData }
+                  : expense
               )
             : null,
           expensesLoading: false,
@@ -85,9 +98,11 @@ export const useExpensesStore = create<ExpensesState>((set) => ({
         return true;
       }
       throw new Error(response.data.message);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       set({
-        expensesError: error.response?.data?.message || "Failed to update expense",
+        expensesError:
+          error.response?.data?.message || "Failed to update expense",
         expensesLoading: false,
       });
       return false;
@@ -101,15 +116,19 @@ export const useExpensesStore = create<ExpensesState>((set) => ({
       const response = await axios.delete(`/api/expenses/delete/${expenseId}`);
       if (response.data.success) {
         set((state) => ({
-          expenses: state.expenses ? state.expenses.filter((expense) => expense.id !== expenseId) : null,
+          expenses: state.expenses
+            ? state.expenses.filter((expense) => expense.id !== expenseId)
+            : null,
           expensesLoading: false,
         }));
         return true;
       }
       throw new Error(response.data.message);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       set({
-        expensesError: error.response?.data?.message || "Failed to delete expense",
+        expensesError:
+          error.response?.data?.message || "Failed to delete expense",
         expensesLoading: false,
       });
       return false;
