@@ -24,13 +24,13 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    if (profile && (expenses?.expenses?.length ?? 0) > 0) {
+    if (profile && (expenses?.length ?? 0) > 0) {
       const userSalary = profile?.user.salary || 0;
       setSalary(userSalary);
 
       // Calculate total spent
       const total =
-        expenses?.expenses?.reduce((acc, expense) => acc + expense.amount, 0) ??
+        expenses?.reduce((acc, expense) => acc + expense.amount, 0) ??
         0;
       setTotalSpent(total);
 

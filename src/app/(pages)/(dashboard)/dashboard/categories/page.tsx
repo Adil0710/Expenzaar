@@ -28,10 +28,11 @@ import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import SVGNotFound from "@/components/SVG/notfound";
 import ArrowSVG from "@/components/SVG/arrow";
+import SVGError from "@/components/SVG/error";
 
 export default function CategoriesPage() {
   const { data: session } = useSession();
-  const { fetchCategories, categoriesLoading, categories, deleteCategory } =
+  const { fetchCategories, categoriesLoading, categories, deleteCategory, categoriesError } =
     useCategoriesStore();
 
   const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(
@@ -122,12 +123,23 @@ export default function CategoriesPage() {
               </CardFooter>
             </Card>
           ))
+        ) : categoriesError && !categories.categories.length ? (
+          /* Show error message only when a network issue occurs */
+          <div className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 flex flex-col justify-center items-center gap-10">
+            <SVGError className="w-80 h-80" />
+            <span className="text-xl -mt-10 font-semibold">
+              {categoriesError || "A network error occurred, please try again"}
+            </span>
+            <Button onClick={fetchCategories}>
+              <Icons.RefreshCcw className="mr-2" /> Try Again
+            </Button>
+          </div>
         ) : (categories?.categories?.length ?? 0) === 0 ? (
           <>
             <ArrowSVG className=" absolute sm:right-[17%] sm:top-[22%] sm:-translate-y-[22%] sm:-translate-x-[17%] sm:rotate-[12deg] sm:w-44 w-16 right-16 top-20 -rotate-[25deg]" />
             <div className=" absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 flex flex-col justify-center items-center gap-10 ">
               <SVGNotFound className=" w-80 h-80" />
-              <span className=" text-2xl ml-10 font-semibold">
+              <span className=" text-xl ml-10 font-semibold">
                 {" "}
                 No categories found
               </span>

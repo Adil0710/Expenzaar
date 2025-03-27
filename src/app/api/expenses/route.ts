@@ -44,12 +44,12 @@ export async function GET(req: Request) {
       orderBy: { createdAt: "desc" }, // Order by ascending to track cumulative total correctly
     });
 
-    if (!expenses.length) {
-      return NextResponse.json(
-        { success: false, message: "No expenses found" },
-        { status: 404 }
-      );
-    }
+    // if (!expenses.length) {
+    //   return NextResponse.json(
+    //     { success: false, message: "No expenses found" },
+    //     { status: 404 }
+    //   );
+    // }
 
     // Calculate total spent for each month and category
     const categorySpent: Record<string, Record<string, number>> = {};
