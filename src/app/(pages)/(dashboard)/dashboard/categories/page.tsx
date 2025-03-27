@@ -27,6 +27,7 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import SVGNotFound from "@/components/SVG/notfound";
+import ArrowSVG from "@/components/SVG/arrow";
 
 export default function CategoriesPage() {
   const { data: session } = useSession();
@@ -69,7 +70,7 @@ export default function CategoriesPage() {
           disabled={categoriesLoading}
         />
       </div>
-      <div className="*:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4 grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card lg:px-6">
+      <div className="*:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4 grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card lg:px-6 mt-5">
         {categoriesLoading || !categories?.categories ? (
           Array.from({ length: 4 }).map((_, i) => (
             <Card
@@ -122,10 +123,16 @@ export default function CategoriesPage() {
             </Card>
           ))
         ) : (categories?.categories?.length ?? 0) === 0 ? (
-          <div className=" absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 flex flex-col justify-center items-center gap-10 ">
-            <SVGNotFound className=" w-80 h-80" />
-            <span className=" text-2xl ml-10 font-semibold"> No categories found</span>
-          </div>
+          <>
+            <ArrowSVG className=" absolute sm:right-[17%] sm:top-[22%] sm:-translate-y-[22%] sm:-translate-x-[17%] sm:rotate-[12deg] sm:w-44 w-16 right-16 top-20 -rotate-[25deg]" />
+            <div className=" absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 flex flex-col justify-center items-center gap-10 ">
+              <SVGNotFound className=" w-80 h-80" />
+              <span className=" text-2xl ml-10 font-semibold">
+                {" "}
+                No categories found
+              </span>
+            </div>
+          </>
         ) : (
           categories?.categories?.map((category) => {
             if (!category) return null; // Prevents undefined errors
