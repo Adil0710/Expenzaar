@@ -31,6 +31,7 @@ import ArrowSVG from "@/components/SVG/arrow";
 import SVGError from "@/components/SVG/error";
 import { Pagination } from "@/components/pagination";
 import { useProfileStore } from "@/lib/store/profileStore";
+import { Input } from "@/components/ui/input";
 
 export default function CategoriesPage() {
   const {
@@ -49,11 +50,15 @@ export default function CategoriesPage() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(
     null
   );
-
+  const [searchTerm, setSearchTerm] = useState("");
   useEffect(() => {
     fetchCategories();
     fetchProfile();
   }, []);
+
+  const filteredCategories = allCategories.filter((category) =>
+    category.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const handleDelete = async (categoryId: string) => {
     await deleteCategory(categoryId);
@@ -77,13 +82,35 @@ export default function CategoriesPage() {
 
   // Check if we have any categories (either in the current page or in all categories)
   const hasCategories =
-    (categories?.categories?.length ?? 0) > 0 || allCategories.length > 0;
+    (filteredCategories.length ?? 0) > 0 || allCategories.length > 0;
+
+  const totalCategories = allCategories?.length || 0; // Count before pagination
 
   return (
     <div className=" relative min-h-[84vh]">
       <div className="flex flex-row items-end w-full px-4 lg:px-6 justify-between">
         <div className="flex items-center">
-          <h1 className="text-2xl font-bold tracking-tight">Categories</h1>
+          <h1 className="text-sm text-muted-foreground">
+            Showing{" "}
+            {Math.min(
+              (pagination.page - 1) * pagination.pageSize + 1,
+              totalCategories
+            )}{" "}
+            - {Math.min(pagination.page * pagination.pageSize, totalCategories)}{" "}
+            of {totalCategories} categories
+          </h1>
+        </div>
+        <div className="relative md:w-1/2 w-full">
+          <Icons.Search
+            size={20}
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+          />
+          <Input
+            className=" pl-10 "
+            placeholder="Search Category"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
         <ExpenseCategory
           defaultTab="category"
@@ -169,7 +196,7 @@ export default function CategoriesPage() {
             </div>
           </>
         ) : (
-          categories?.categories?.map((category) => {
+          filteredCategories.map((category) => {
             if (!category) return null; // Prevents undefined errors
             const LucideIcon = Icons[
               category?.icon as keyof typeof Icons
