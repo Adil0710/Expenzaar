@@ -10,7 +10,7 @@ declare module "next-auth" {
     user: {
       id: string;
       googleAccount: boolean;
-      currencySymbol?: string;
+      currencySymbol: string;
     } & DefaultSession["user"];
   }
 
@@ -109,7 +109,7 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id as string;
         session.user.name = token.name as string;
         session.user.googleAccount = token.googleAccount as boolean;
-        session.user.currencySymbol = token.currencySymbol as string
+        session.user.currencySymbol = token.currencySymbol as string;
       }
 
       return session;
@@ -120,7 +120,13 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.name = user.name;
         token.googleAccount = user.googleAccount || false;
-        token.currencySymbol = user.currencySymbol
+        // Fetch currencySymbol from DB
+        const dbUser = await prisma.user.findUnique({
+          where: { id: user.id },
+          select: { currencySymbol: true },
+        });
+
+        token.currencySymbol = dbUser?.currencySymbol || "$"; // Default to "$" if undefined
       }
 
       return token;

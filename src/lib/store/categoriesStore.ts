@@ -9,6 +9,7 @@ export interface Category {
   color: string;
   remaining?: number;
   createdAt?: number;
+  updatedAt?: number
 }
 
 export interface Categories {

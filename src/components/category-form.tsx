@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { TabsContent } from "./ui/tabs";
 import { DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
 import { useForm } from "react-hook-form";
@@ -14,18 +14,16 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Category,
-  useCategoriesStore,
-} from "@/lib/store/categoriesStore";
+import { Category, useCategoriesStore } from "@/lib/store/categoriesStore";
 import { Skeleton } from "./ui/skeleton";
 import { Input } from "./ui/input";
 import { Component, DollarSign } from "lucide-react";
 import { Button } from "./ui/button";
 import LoaderLine from "./loaderline";
-import { useSession } from "next-auth/react";
+
 import IconSelector from "./Icon-Selector";
 import ColorSelector from "./Color-Selector";
+import { useProfileStore } from "@/lib/store/profileStore";
 
 interface CategoryFormProps {
   selectedCategory?: Category | null;
@@ -44,14 +42,14 @@ export default function CategoryForm({
   selectedCategory,
   onUpdate,
 }: CategoryFormProps) {
-  const { data: session } = useSession();
+
   const { toast } = useToast();
   const { addCategory, updateCategory, fetchCategories, categoriesLoading } =
     useCategoriesStore();
+    const {profile} = useProfileStore()
 
-  const loggedUser = {
-    symbol: session?.user.currencySymbol,
-  };
+
+
 
   const categoriesAdd = useForm<CategoriesFormvalues>({
     resolver: zodResolver(categoriesSchema),
@@ -199,7 +197,7 @@ export default function CategoryForm({
                       />
                     </FormControl>
                     <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sm">
-                      {loggedUser.symbol || <DollarSign className="h-4 w-4" />}
+                      {profile?.user.currencySymbol || <DollarSign className="h-4 w-4" />}
                     </span>
                   </div>
                 )}

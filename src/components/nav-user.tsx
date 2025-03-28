@@ -109,8 +109,6 @@ export function NavUser({
   >(null);
 
   const loggedUser = {
-    name: session?.user.name || "Unknown",
-    email: session?.user.email || "No email",
     googleAccount: session?.user.googleAccount || false,
   };
 
@@ -238,17 +236,27 @@ export function NavUser({
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
             >
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">
-                  {getUserInitials(loggedUser.name)}
-                </AvatarFallback>
-              </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{loggedUser.name}</span>
-                <span className="truncate text-xs">{loggedUser.email}</span>
-              </div>
-              <EllipsisVertical className="ml-auto size-4" />
+              {profileLoading ? (
+                <Skeleton className=" w-full h-16" />
+              ) : (
+                <>
+                  <Avatar className="h-8 w-8 rounded-lg">
+                    <AvatarImage src={user.avatar} alt={user.name} />
+                    <AvatarFallback className="rounded-lg">
+                      {getUserInitials(profile?.user.name || "Expenzaar")}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-medium">
+                      {profile?.user.name}
+                    </span>
+                    <span className="truncate text-xs">
+                      {profile?.user.email}
+                    </span>
+                  </div>
+                  <EllipsisVertical className="ml-auto size-4" />
+                </>
+              )}
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -259,18 +267,26 @@ export function NavUser({
           >
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">
-                    {getUserInitials(loggedUser.name)}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">
-                    {loggedUser.name}
-                  </span>
-                  <span className="truncate text-xs">{loggedUser.email}</span>
-                </div>
+                {profileLoading ? (
+                  <Skeleton className="w-full h-16" />
+                ) : (
+                  <>
+                    <Avatar className="h-8 w-8 rounded-lg">
+                      <AvatarImage src={user.avatar} alt={user.name} />
+                      <AvatarFallback className="rounded-lg">
+                        {getUserInitials(profile?.user.name || "Expenzaar")}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="grid flex-1 text-left text-sm leading-tight">
+                      <span className="truncate font-medium">
+                        {profile?.user.name}
+                      </span>
+                      <span className="truncate text-xs">
+                        {profile?.user.email}
+                      </span>
+                    </div>
+                  </>
+                )}
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
