@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { BookOpen, Sparkles, LayoutDashboard, Component } from "lucide-react";
+import { BookOpen, Sparkles, LayoutDashboard, Component, ClipboardList } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
 
@@ -49,6 +49,11 @@ const data = {
       title: "Categories",
       url: "/dashboard/categories",
       icon: Component,
+    },
+    {
+      title: "Reports",
+      url: "/dashboard/reports",
+      icon: ClipboardList,
     },
     {
       title: "AI",
