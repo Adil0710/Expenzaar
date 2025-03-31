@@ -43,7 +43,7 @@ export function NavMain({
               >
                 {" "}
                 {item.icon && <item.icon />}
-                <span>{item.title}</span>
+                <span className=" relative w-full">{item.title} {item.title === "AI" && <span className=" border border-cyan-400 bg-cyan-500/10 text-cyan-500 text-[9px] absolute left-6 -top-0 px-1.5 rounded-lg">New</span>}</span>
               </SidebarMenuButton>
             </Link>
           </SidebarMenuItem>
