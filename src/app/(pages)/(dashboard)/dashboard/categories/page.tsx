@@ -34,7 +34,7 @@ export default function CategoriesPage() {
   const {
     fetchCategories,
     categoriesLoading,
-    categories,
+  
     deleteCategory,
     categoriesError,
     pagination,
