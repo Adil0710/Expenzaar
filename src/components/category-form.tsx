@@ -42,14 +42,10 @@ export default function CategoryForm({
   selectedCategory,
   onUpdate,
 }: CategoryFormProps) {
-
   const { toast } = useToast();
   const { addCategory, updateCategory, fetchCategories, categoriesLoading } =
     useCategoriesStore();
-    const {profile} = useProfileStore()
-
-
-
+  const { profile } = useProfileStore();
 
   const categoriesAdd = useForm<CategoriesFormvalues>({
     resolver: zodResolver(categoriesSchema),
@@ -141,9 +137,8 @@ export default function CategoryForm({
         </DialogTitle>
         <DialogDescription>
           {selectedCategory
-            ? "Edit your category here."
-            : "Add your category here."}{" "}
-          Click save when you&apos;re done.
+            ? "Edit your category here. Click save when you're done."
+            : "Add your category here. Click add when you're done."}{" "}
         </DialogDescription>
       </DialogHeader>
 
@@ -197,7 +192,9 @@ export default function CategoryForm({
                       />
                     </FormControl>
                     <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sm">
-                      {profile?.user.currencySymbol || <DollarSign className="h-4 w-4" />}
+                      {profile?.user.currencySymbol || (
+                        <DollarSign className="h-4 w-4" />
+                      )}
                     </span>
                   </div>
                 )}
@@ -254,9 +251,9 @@ export default function CategoryForm({
             {categoriesLoading ? (
               <LoaderLine />
             ) : selectedCategory ? (
-              "Update Category"
-            ) : (
               "Save Changes"
+            ) : (
+              "Add Category"
             )}
           </Button>
         </form>

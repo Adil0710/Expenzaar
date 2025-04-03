@@ -237,7 +237,7 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
             >
               {profileLoading ? (
-                <Skeleton className=" w-full h-16" />
+                <Skeleton className=" w-full h-16 rounded-lg" />
               ) : (
                 <>
                   <Avatar className="h-8 w-8 rounded-lg">

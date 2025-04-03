@@ -7,6 +7,7 @@ import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
 
 import CategoryForm from "./category-form";
 import { Category } from "@/lib/store/categoriesStore";
+import ExpenseForm from "./expense-form";
 
 interface ExpenseCategoryProps {
   defaultTab: "category" | "expense";
@@ -61,6 +62,7 @@ export default function ExpenseCategory({
             </TabsList>
             {/* Pass handleClose to close after adding/updating */}
             <CategoryForm selectedCategory={selectedCategory} onUpdate={handleClose} />
+            <ExpenseForm/>
           </Tabs>
         </DialogContent>
       </Dialog>
