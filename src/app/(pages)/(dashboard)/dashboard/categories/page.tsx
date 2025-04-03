@@ -32,6 +32,7 @@ import SVGError from "@/components/SVG/error";
 import { Pagination } from "@/components/pagination";
 import { useProfileStore } from "@/lib/store/profileStore";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 
 export default function CategoriesPage() {
   const {
@@ -110,8 +111,8 @@ export default function CategoriesPage() {
 
   return (
     <div className="relative min-h-[84vh]">
-      <div className="flex flex-row items-end w-full px-4 lg:px-6 justify-between">
-        <div className="flex items-center">
+      <div className="flex md:flex-row flex-col-reverse items-start md:items-end w-full px-4 lg:px-6 justify-between md:gap-0 gap-4">
+        <div className="flex items-center md:w-1/2 w-full">
           <h1 className="text-sm text-muted-foreground">
             {isLoading ? (
               <Skeleton className="h-4 w-40" />
@@ -134,26 +135,28 @@ export default function CategoriesPage() {
             )}
           </h1>
         </div>
-        <div className="relative md:w-1/2 w-full">
-          <Icons.Search
-            size={20}
-            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-          />
-          <Input
-            className="pl-10"
-            placeholder="Search Category"
-            value={searchTerm}
-            onChange={handleSearchChange}
+        <div className=" flex md:flex-row flex-col md:gap-0 gap-4 justify-between w-full">
+          <div className="relative md:w-1/2 w-full">
+            <Icons.Search
+              size={20}
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+            />
+            <Input
+              className="pl-10"
+              placeholder="Search Category"
+              value={searchTerm}
+              onChange={handleSearchChange}
+              disabled={isLoading}
+            />
+          </div>
+          <ExpenseCategory
+            defaultTab="category"
+            tabName="Category"
+            selectedCategory={selectedCategory}
+            onClose={handleDialogClose}
             disabled={isLoading}
           />
         </div>
-        <ExpenseCategory
-          defaultTab="category"
-          tabName="Category"
-          selectedCategory={selectedCategory}
-          onClose={handleDialogClose}
-          disabled={isLoading}
-        />
       </div>
 
       <div className="*:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4 grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card lg:px-6 mt-5">
@@ -222,13 +225,19 @@ export default function CategoriesPage() {
         ) : displayedCategories.length === 0 ? (
           <>
             <ArrowSVG className="absolute sm:right-[17%] sm:top-[22%] sm:-translate-y-[22%] sm:-translate-x-[17%] sm:rotate-[12deg] sm:w-44 w-16 right-16 top-20 -rotate-[25deg]" />
-            <div className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 flex flex-col justify-center items-center gap-10">
+            <div className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 flex flex-col justify-center items-center gap-2">
               <SVGNotFound className="w-80 h-80" />
-              <span className="text-xl ml-10 font-semibold">
+              <h3 className="text-lg font-medium mb-0 mt-4">
+                No expenses found
+              </h3>
+              <p className="text-muted-foreground mb-4">
                 {searchTerm
-                  ? "No matching categories found"
-                  : "No categories found"}
-              </span>
+                  ? "Try adjusting your search text to see more results"
+                  : "Start by adding your first category"}
+              </p>
+              {searchTerm && (
+                <Button onClick={()=> setSearchTerm("")}>Clear Search</Button>
+              )}
             </div>
           </>
         ) : (
@@ -315,14 +324,20 @@ export default function CategoriesPage() {
                       <span className="text-sm text-muted-foreground">
                         Budget Usage
                       </span>
-                      <span
+                      <Badge
+                        variant="secondary"
                         className={cn(
-                          "text-sm font-medium",
-                          isOverBudget ? "text-destructive" : "text-primary"
+                          "flex items-center gap-1",
+                          isOverBudget ? "bg-danger" : ""
                         )}
                       >
+                        {isOverBudget ? (
+                          <Icons.AlertTriangle className="h-3 w-3" />
+                        ) : (
+                          <Icons.CheckCircle2 className="h-3 w-3" />
+                        )}
                         {spentPercentage.toFixed(1)}%
-                      </span>
+                      </Badge>
                     </div>
                     <Progress
                       value={spentPercentage}
@@ -375,10 +390,10 @@ export default function CategoriesPage() {
           })
         )}
       </div>
-      <div className="absolute w-full left-0 -bottom-4 mt-6">
+      <div className=" md:mt-6 mt-22">
         {/* Pagination controls - only show if we have categories and not loading */}
         {hasCategories && !isLoading && !categoriesError && (
-          <div className="px-4 lg:px-6 mb-0">
+          <div className="px-4 absolute w-full left-0 -bottom-4 lg:px-6 mb-0">
             <Pagination
               currentPage={pagination.page}
               totalPages={totalPages}

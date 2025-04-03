@@ -234,7 +234,7 @@ function Expense() {
           {/* Mobile filter sheet */}
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="outline" className="md:hidden">
+              <Button variant="outline" size="sm" className="md:hidden">
                 <Filter className="h-4 w-4 mr-2" />
                 Filters
                 {hasFilters && (
@@ -367,10 +367,10 @@ function Expense() {
                 size={16}
               />
               <Input
-                placeholder="Search expenses..."
+                placeholder="Search Expenses"
                 value={filters.searchTerm}
                 onChange={handleSearchChange}
-                className="pl-10 w-[200px]"
+                className="pl-10 w-[350px]"
                 disabled={isLoading}
               />
             </div>
@@ -379,15 +379,14 @@ function Expense() {
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
-                  size="sm"
                   className={cn(
                     "justify-start font-normal",
                     !startDate && "text-muted-foreground"
                   )}
                   disabled={isLoading}
                 >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {startDate ? format(startDate, "PP") : "Start"}
+                  <CalendarIcon className="mr-1 h-4 w-4" />
+                  {startDate ? format(startDate, "PP") : "Start Date"}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
@@ -404,15 +403,14 @@ function Expense() {
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
-                  size="sm"
                   className={cn(
                     "justify-start font-normal",
                     !endDate && "text-muted-foreground"
                   )}
                   disabled={isLoading}
                 >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {endDate ? format(endDate, "PP") : "End"}
+                  <CalendarIcon className="mr-1 h-4 w-4" />
+                  {endDate ? format(endDate, "PP") : "End Date"}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
@@ -539,13 +537,16 @@ function Expense() {
         ) : expenses?.length === 0 ? (
           <>
             <ArrowSVG className="absolute sm:right-[17%] sm:top-[22%] sm:-translate-y-[22%] sm:-translate-x-[17%] sm:rotate-[12deg] sm:w-44 w-16 right-16 top-20 -rotate-[25deg]" />
-            <div className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 flex flex-col justify-center items-center gap-10">
+            <div className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 flex flex-col justify-center items-center gap-2">
               <SVGNotFound className="w-80 h-80" />
-              <span className="text-xl ml-10 font-semibold">
+              <h3 className="text-lg font-medium mb-0 mt-4">
+                No expenses found
+              </h3>
+              <p className="text-muted-foreground mb-4">
                 {hasFilters
-                  ? "No matching expenses found"
-                  : "No expenses found"}
-              </span>
+                  ? "Try adjusting your filters to see more results"
+                  : "Start by adding your first expense"}
+              </p>
               {hasFilters && (
                 <Button onClick={handleClearFilters}>Clear Filters</Button>
               )}
@@ -641,7 +642,7 @@ function Expense() {
                         variant="secondary"
                         className={cn(
                           "flex items-center gap-1",
-                          isOverLimit ? "bg-danger" : "bg-success"
+                          isOverLimit ? "bg-danger" : ""
                         )}
                       >
                         {isOverLimit ? (
@@ -653,7 +654,7 @@ function Expense() {
                       </Badge>
                     </div>
                     <Progress
-                      value={Math.min(spentPercentage, 100)}
+                      value={spentPercentage}
                       className={cn(
                         "h-2",
                         isOverLimit ? "text-destructive" : "text-primary"
@@ -723,7 +724,7 @@ function Expense() {
 
       {/* Pagination */}
       {hasExpenses && !isLoading && (
-        <div className=" mt-22">
+        <div className="md:mt-6 mt-22">
           <div className="px-4 absolute w-full left-0 -bottom-4 lg:px-6 mb-0">
             <Pagination
               currentPage={pagination.page}
