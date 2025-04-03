@@ -617,7 +617,7 @@ function Expense() {
                             <AlertDialogTitle>Delete Expense</AlertDialogTitle>
                             <AlertDialogDescription>
                               Are you sure you want to delete this expense from
-                              "{expense.category.name}"? This action cannot be
+                              &quot;{expense.category.name}&quot;? This action cannot be
                               undone.
                             </AlertDialogDescription>
                           </AlertDialogHeader>

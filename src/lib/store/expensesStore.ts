@@ -508,7 +508,7 @@ export const useExpensesStore = create<ExpensesState>((set, get) => ({
           expense.id === expenseId ? { ...expense, ...updatedData } : expense
         );
 
-        set((state) => ({
+        set(() => ({
           allExpenses: updatedAllExpenses,
           expensesLoading: false,
         }));
