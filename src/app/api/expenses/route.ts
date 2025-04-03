@@ -39,7 +39,8 @@ export async function GET(req: Request) {
             name: true,
             limit: true,
             color: true,
-            icon:true
+            icon:true,
+            id:true
           },
         },
       },

@@ -102,7 +102,7 @@ export async function PUT(
         : false;
 
       await prisma.expense.updateMany({
-        where: { categoryId },
+        where: { categoryId, isOverLimit: { not: isOverLimit } }, // Only update if necessary
         data: { isOverLimit },
       });
     };

@@ -1,15 +1,18 @@
-"use client"
-import ExpenseCategory from "@/components/expense-category"
-import { type Category as CategoryType, useCategoriesStore } from "@/lib/store/categoriesStore"
-import type React from "react"
-import { useEffect, useState } from "react"
-import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import * as Icons from "lucide-react"
+"use client";
+import ExpenseCategory from "@/components/expense-category";
+import {
+  type Category as CategoryType,
+  useCategoriesStore,
+} from "@/lib/store/categoriesStore";
+import type React from "react";
+import { useEffect, useState } from "react";
+import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import * as Icons from "lucide-react";
 
-import { cn, formatTimestamp } from "@/lib/utils"
+import { cn, formatTimestamp } from "@/lib/utils";
 
-import { Button } from "@/components/ui/button"
-import { Pencil, Trash2, Clock, CalendarDays, RefreshCcw } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import { Pencil, Trash2, Clock, CalendarDays, RefreshCcw } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,88 +23,90 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import { Progress } from "@/components/ui/progress"
-import { Skeleton } from "@/components/ui/skeleton"
-import SVGNotFound from "@/components/SVG/notfound"
-import ArrowSVG from "@/components/SVG/arrow"
-import SVGError from "@/components/SVG/error"
-import { Pagination } from "@/components/pagination"
-import { useProfileStore } from "@/lib/store/profileStore"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/alert-dialog";
+import { Progress } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
+import SVGNotFound from "@/components/SVG/notfound";
+import ArrowSVG from "@/components/SVG/arrow";
+import SVGError from "@/components/SVG/error";
+import { Pagination } from "@/components/pagination";
+import { useProfileStore } from "@/lib/store/profileStore";
+import { Input } from "@/components/ui/input";
 
 export default function CategoriesPage() {
   const {
     fetchCategories,
     categoriesLoading,
-  
+
     deleteCategory,
     categoriesError,
     pagination,
     setPage,
     setPageSize,
     allCategories,
-  } = useCategoriesStore()
-  const { profile, fetchProfile } = useProfileStore()
+  } = useCategoriesStore();
+  const { profile, fetchProfile } = useProfileStore();
 
-  const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(null)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [initialLoading, setInitialLoading] = useState(true)
+  const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(
+    null
+  );
+  const [searchTerm, setSearchTerm] = useState("");
+  const [initialLoading, setInitialLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
-      await Promise.all([fetchCategories(), fetchProfile()])
-      setInitialLoading(false)
-    }
+      await Promise.all([fetchCategories(), fetchProfile()]);
+      setInitialLoading(false);
+    };
 
-    loadData()
-  }, [])
+    loadData();
+  }, []);
 
   // Filter categories based on search term
   const filteredCategories = allCategories.filter((category) =>
-    category.name.toLowerCase().includes(searchTerm.toLowerCase()),
-  )
+    category.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   // Calculate pagination for filtered categories
-  const totalFilteredCategories = filteredCategories.length
-  const totalPages = Math.ceil(totalFilteredCategories / pagination.pageSize)
+  const totalFilteredCategories = filteredCategories.length;
+  const totalPages = Math.ceil(totalFilteredCategories / pagination.pageSize);
 
   // Get current page of filtered categories
-  const startIndex = (pagination.page - 1) * pagination.pageSize
-  const endIndex = startIndex + pagination.pageSize
-  const displayedCategories = filteredCategories.slice(startIndex, endIndex)
+  const startIndex = (pagination.page - 1) * pagination.pageSize;
+  const endIndex = startIndex + pagination.pageSize;
+  const displayedCategories = filteredCategories.slice(startIndex, endIndex);
 
   const handleDelete = async (categoryId: string) => {
-    await deleteCategory(categoryId)
-  }
+    await deleteCategory(categoryId);
+  };
 
   const handleEdit = (category: CategoryType) => {
-    setSelectedCategory(category)
-  }
+    setSelectedCategory(category);
+  };
 
   const handleDialogClose = () => {
-    setSelectedCategory(null)
-  }
+    setSelectedCategory(null);
+  };
 
   const handlePageChange = (page: number) => {
-    setPage(page)
-  }
+    setPage(page);
+  };
 
   const handlePageSizeChange = (size: number) => {
-    setPageSize(size)
-  }
+    setPageSize(size);
+  };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value)
+    setSearchTerm(e.target.value);
     // Reset to page 1 when searching
-    setPage(1)
-  }
+    setPage(1);
+  };
 
   // Check if we have any categories
-  const hasCategories = filteredCategories.length > 0
+  const hasCategories = filteredCategories.length > 0;
 
   // Determine if we're in a loading state
-  const isLoading = initialLoading || categoriesLoading
+  const isLoading = initialLoading || categoriesLoading;
 
   return (
     <div className="relative min-h-[84vh]">
@@ -112,9 +117,17 @@ export default function CategoriesPage() {
               <Skeleton className="h-4 w-40" />
             ) : totalFilteredCategories > 0 ? (
               <>
-                Showing {Math.min((pagination.page - 1) * pagination.pageSize + 1, totalFilteredCategories)} -{" "}
-                {Math.min(pagination.page * pagination.pageSize, totalFilteredCategories)} of {totalFilteredCategories}{" "}
-                categories
+                Showing{" "}
+                {Math.min(
+                  (pagination.page - 1) * pagination.pageSize + 1,
+                  totalFilteredCategories
+                )}{" "}
+                -{" "}
+                {Math.min(
+                  pagination.page * pagination.pageSize,
+                  totalFilteredCategories
+                )}{" "}
+                of {totalFilteredCategories} categories
               </>
             ) : (
               "No categories found"
@@ -122,7 +135,10 @@ export default function CategoriesPage() {
           </h1>
         </div>
         <div className="relative md:w-1/2 w-full">
-          <Icons.Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+          <Icons.Search
+            size={20}
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+          />
           <Input
             className="pl-10"
             placeholder="Search Category"
@@ -209,27 +225,34 @@ export default function CategoriesPage() {
             <div className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 flex flex-col justify-center items-center gap-10">
               <SVGNotFound className="w-80 h-80" />
               <span className="text-xl ml-10 font-semibold">
-                {searchTerm ? "No matching categories found" : "No categories found"}
+                {searchTerm
+                  ? "No matching categories found"
+                  : "No categories found"}
               </span>
             </div>
           </>
         ) : (
           displayedCategories.map((category) => {
-            if (!category) return null // Prevents undefined errors
-            const LucideIcon = Icons[category?.icon as keyof typeof Icons] as React.ElementType
+            if (!category) return null; // Prevents undefined errors
+            const LucideIcon = Icons[
+              category?.icon as keyof typeof Icons
+            ] as React.ElementType;
 
-            const spentAmount = (category?.limit ?? 0) - (category?.remaining ?? 0)
+            const spentAmount =
+              (category?.limit ?? 0) - (category?.remaining ?? 0);
 
-            const spentPercentage = category?.limit ? (spentAmount / category.limit) * 100 : 0
+            const spentPercentage = category?.limit
+              ? (spentAmount / category.limit) * 100
+              : 0;
 
-            const isOverBudget = (category.remaining ?? 0) < 0
+            const isOverBudget = (category.remaining ?? 0) < 0;
 
             return (
               <Card
                 key={category.id}
                 className="@container/card max-w-sm group relative overflow-hidden transition-all duration-300 hover:shadow-lg"
               >
-                <div className="absolute inset-0 opacity-10 transition-opacity group-hover:opacity-20" />
+                <div className="absolute inset-0 opacity-10 transition-opacity" />
                 <CardHeader className="relative space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -270,12 +293,17 @@ export default function CategoriesPage() {
                             <AlertDialogTitle>Delete Category</AlertDialogTitle>
                             <AlertDialogDescription>
                               Are you sure you want to delete the &quot;
-                              {category.name}&quot; category? This action cannot be undone.
+                              {category.name}&quot; category? This action cannot
+                              be undone.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => handleDelete(category.id)}>Delete</AlertDialogAction>
+                            <AlertDialogAction
+                              onClick={() => handleDelete(category.id)}
+                            >
+                              Delete
+                            </AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
                       </AlertDialog>
@@ -284,31 +312,45 @@ export default function CategoriesPage() {
 
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">Budget Usage</span>
-                      <span className={cn("text-sm font-medium", isOverBudget ? "text-destructive" : "text-primary")}>
+                      <span className="text-sm text-muted-foreground">
+                        Budget Usage
+                      </span>
+                      <span
+                        className={cn(
+                          "text-sm font-medium",
+                          isOverBudget ? "text-destructive" : "text-primary"
+                        )}
+                      >
                         {spentPercentage.toFixed(1)}%
                       </span>
                     </div>
                     <Progress
                       value={spentPercentage}
-                      className={cn("h-2", isOverBudget ? "text-destructive" : "text-primary")}
+                      className={cn(
+                        "h-2",
+                        isOverBudget ? "text-destructive" : "text-primary"
+                      )}
                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <span className="text-sm text-muted-foreground">Limit</span>
+                      <span className="text-sm text-muted-foreground">
+                        Limit
+                      </span>
                       <p className="text-xl font-semibold tabular-nums">
                         {profile?.user.currencySymbol}
                         {category.limit}
                       </p>
                     </div>
                     <div className="space-y-1.5">
-                      <span className="text-sm text-muted-foreground">Remaining</span>
+                      <span className="text-sm text-muted-foreground">
+                        Remaining
+                      </span>
                       <p
                         className={cn(
                           "text-xl font-semibold tabular-nums",
-                          isOverBudget ? "text-destructive" : "text-primary",
+                          isOverBudget ? "text-destructive" : "text-primary"
                         )}
                       >
                         {profile?.user.currencySymbol}
@@ -329,7 +371,7 @@ export default function CategoriesPage() {
                   </div>
                 </CardFooter>
               </Card>
-            )
+            );
           })
         )}
       </div>
@@ -349,6 +391,5 @@ export default function CategoriesPage() {
         )}
       </div>
     </div>
-  )
+  );
 }
-
