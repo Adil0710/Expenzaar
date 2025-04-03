@@ -394,6 +394,7 @@ function Expense() {
                   mode="single"
                   selected={startDate}
                   onSelect={setStartDate}
+                  initialFocus
                   className="rounded-md border"
                 />
               </PopoverContent>
