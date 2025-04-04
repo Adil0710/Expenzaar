@@ -5,6 +5,7 @@ export interface Expense {
   id: string;
   userId: string;
   expenseId: string;
+  categoryId: string;
   amount: number;
   isOverLimit?: boolean;
   description: string;

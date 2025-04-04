@@ -8,13 +8,15 @@ import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
 import CategoryForm from "./category-form";
 import { Category } from "@/lib/store/categoriesStore";
 import ExpenseForm from "./expense-form";
+import { Expense } from "@/lib/store/expensesStore";
 
 interface ExpenseCategoryProps {
   defaultTab: "category" | "expense";
   tabName: "Category" | "Expense";
   selectedCategory?: Category | null;
   onClose?: () => void;
-  disabled?: boolean
+  disabled?: boolean;
+  selectedExpense?: Expense | null;
 }
 
 export default function ExpenseCategory({
@@ -22,7 +24,8 @@ export default function ExpenseCategory({
   tabName,
   selectedCategory,
   onClose,
-  disabled
+  disabled,
+  selectedExpense
 }: ExpenseCategoryProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [tabType, setTabType] = useState<"category" | "expense">(defaultTab);
@@ -40,6 +43,13 @@ export default function ExpenseCategory({
     }
   }, [selectedCategory]);
 
+  useEffect(() => {
+    if (selectedExpense) {
+      setIsOpen(true);
+    }
+    console.log(selectedExpense)
+  }, [selectedExpense]);
+
   return (
     <div>
       <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
@@ -49,7 +59,12 @@ export default function ExpenseCategory({
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
-          <Tabs value={tabType} onValueChange={(value) => setTabType(value as "category" | "expense")}>
+          <Tabs
+            value={tabType}
+            onValueChange={(value) =>
+              setTabType(value as "category" | "expense")
+            }
+          >
             <TabsList className="grid w-[90%] max-w-2xl mx-auto grid-cols-2 mb-6 pb-8">
               <TabsTrigger value="expense" className="cursor-pointer">
                 <BookOpen className="mr-2" size={20} />
@@ -61,8 +76,11 @@ export default function ExpenseCategory({
               </TabsTrigger>
             </TabsList>
             {/* Pass handleClose to close after adding/updating */}
-            <CategoryForm selectedCategory={selectedCategory} onUpdate={handleClose} />
-            <ExpenseForm/>
+            <CategoryForm
+              selectedCategory={selectedCategory}
+              onUpdate={handleClose}
+            />
+            <ExpenseForm selectedExpense={selectedExpense} />
           </Tabs>
         </DialogContent>
       </Dialog>

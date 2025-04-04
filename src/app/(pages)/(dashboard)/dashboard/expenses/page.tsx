@@ -1,6 +1,9 @@
 "use client";
 import ExpenseCategory from "@/components/expense-category";
-import { useExpensesStore } from "@/lib/store/expensesStore";
+import {
+  type Expense as ExpenseType,
+  useExpensesStore,
+} from "@/lib/store/expensesStore";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -97,6 +100,10 @@ function Expense() {
   );
   const [initialLoading, setInitialLoading] = useState(true);
 
+  const [selectedExpense, setSelectedExpense] = useState<ExpenseType | null>(
+    null
+  );
+
   useEffect(() => {
     const loadData = async () => {
       await Promise.all([fetchExpenses(), fetchCategories(), fetchProfile()]);
@@ -117,6 +124,10 @@ function Expense() {
   const handleDelete = async (expenseId: string) => {
     await deleteExpense(expenseId);
   };
+
+   const handleEdit = (expense: ExpenseType) => {
+      setSelectedExpense(expense);
+    };
 
   const handlePageChange = (page: number) => {
     setPage(page);
@@ -475,7 +486,7 @@ function Expense() {
             )}
           </div>
 
-          <ExpenseCategory defaultTab="expense" tabName="Expense" />
+          <ExpenseCategory defaultTab="expense" tabName="Expense" selectedExpense={selectedExpense} disabled={isLoading}/>
         </div>
       </div>
 
@@ -596,9 +607,7 @@ function Expense() {
                         variant="ghost"
                         size="icon"
                         className="h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100"
-                        onClick={() => {
-                          /* Add edit handler */
-                        }}
+                        onClick={() =>handleEdit(expense)}
                       >
                         <Pencil className="h-4 w-4" />
                       </Button>
@@ -617,8 +626,8 @@ function Expense() {
                             <AlertDialogTitle>Delete Expense</AlertDialogTitle>
                             <AlertDialogDescription>
                               Are you sure you want to delete this expense from
-                              &quot;{expense.category.name}&quot;? This action cannot be
-                              undone.
+                              &quot;{expense.category.name}&quot;? This action
+                              cannot be undone.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
