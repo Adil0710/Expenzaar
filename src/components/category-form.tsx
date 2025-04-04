@@ -112,6 +112,10 @@ export default function CategoryForm({
           await fetchCategories(); // Ensure categories refresh before closing
           onUpdate?.(); // Call this to close modal & reset selectedCategory
         } else {
+          toast({
+            title: "Failed Add Category",
+            description: "There was an error adding your category",
+          });
           throw new Error("Failed to add category");
         }
       }

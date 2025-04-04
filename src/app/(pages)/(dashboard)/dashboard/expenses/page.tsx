@@ -125,9 +125,13 @@ function Expense() {
     await deleteExpense(expenseId);
   };
 
-   const handleEdit = (expense: ExpenseType) => {
-      setSelectedExpense(expense);
-    };
+  const handleEdit = (expense: ExpenseType) => {
+    setSelectedExpense(expense);
+  };
+
+  const handleDialogClose = () => {
+    setSelectedExpense(null);
+  };
 
   const handlePageChange = (page: number) => {
     setPage(page);
@@ -486,7 +490,13 @@ function Expense() {
             )}
           </div>
 
-          <ExpenseCategory defaultTab="expense" tabName="Expense" selectedExpense={selectedExpense} disabled={isLoading}/>
+          <ExpenseCategory
+            defaultTab="expense"
+            tabName="Expense"
+            selectedExpense={selectedExpense}
+            onClose={handleDialogClose}
+            disabled={isLoading}
+          />
         </div>
       </div>
 
@@ -607,7 +617,7 @@ function Expense() {
                         variant="ghost"
                         size="icon"
                         className="h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100"
-                        onClick={() =>handleEdit(expense)}
+                        onClick={() => handleEdit(expense)}
                       >
                         <Pencil className="h-4 w-4" />
                       </Button>

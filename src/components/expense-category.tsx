@@ -80,7 +80,7 @@ export default function ExpenseCategory({
               selectedCategory={selectedCategory}
               onUpdate={handleClose}
             />
-            <ExpenseForm selectedExpense={selectedExpense} />
+            <ExpenseForm selectedExpense={selectedExpense} onUpdate={handleClose} />
           </Tabs>
         </DialogContent>
       </Dialog>
