@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/form";
 import { Skeleton } from "./ui/skeleton";
 import { Input } from "./ui/input";
-import { DollarSign, LetterText } from "lucide-react";
+import { DollarSign } from "lucide-react";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 import LoaderLine from "./loaderline";
@@ -177,7 +177,7 @@ export default function ExpenseForm({
           <FormField
             control={expenseAdd.control}
             name="categoryId"
-            render={({ field }) => (
+            render={() => (
               <FormItem>
                 <FormLabel>Category</FormLabel>
                 {categoriesLoading ? (
