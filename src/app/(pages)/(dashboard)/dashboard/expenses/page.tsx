@@ -68,6 +68,12 @@ import {
   SheetFooter,
   SheetClose,
 } from "@/components/ui/sheet";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 function Expense() {
   const {
@@ -590,152 +596,234 @@ function Expense() {
                 key={expense.id}
                 className="group relative overflow-hidden transition-all duration-300 hover:shadow-lg"
               >
-                <div className="absolute inset-0 opacity-10 transition-opacity " />
-                <CardHeader className="relative space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="rounded-xl p-1.5 transition-colors"
-                        style={{
-                          backgroundColor: `${expense.category.color}20`,
-                          border: `1px solid ${expense.category.color}40`,
-                        }}
-                      >
-                        <LucideIcon color={expense.category.color} size={24} />
-                      </div>
-                      <div>
-                        <CardTitle className="sm:text-xl text-ellipsis line-clamp-1 text-lg font-semibold capitalize">
-                          {expense.category.name}
-                        </CardTitle>
-                        <p className="text-xs text-ellipsis line-clamp-1 text-muted-foreground">
-                          {expense.description || "No description"}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100"
-                        onClick={() => handleEdit(expense)}
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-destructive/10 hover:text-destructive"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Delete Expense</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Are you sure you want to delete this expense from
-                              &quot;{expense.category.name}&quot;? This action
-                              cannot be undone.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={() => handleDelete(expense.id)}
-                            >
-                              Delete
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
+                <TooltipProvider>
+                  <div className="absolute inset-0 opacity-10 transition-opacity " />
+                  <CardHeader className="relative space-y-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-muted-foreground">
-                        Budget Impact
-                      </span>
-                      <Badge
-                        variant="secondary"
-                        className={cn(
-                          "flex items-center gap-1",
-                          isOverLimit ? "bg-danger" : ""
-                        )}
-                      >
-                        {isOverLimit ? (
-                          <AlertTriangle className="h-3 w-3" />
-                        ) : (
-                          <CheckCircle2 className="h-3 w-3" />
-                        )}
-                        {spentPercentage.toFixed(1)}%
-                      </Badge>
+                      <div className="flex items-center gap-3">
+                        <div
+                          className="rounded-xl p-1.5 transition-colors"
+                          style={{
+                            backgroundColor: `${expense.category.color}20`,
+                            border: `1px solid ${expense.category.color}40`,
+                          }}
+                        >
+                          <LucideIcon
+                            color={expense.category.color}
+                            size={24}
+                          />
+                        </div>
+                        <div>
+                          <CardTitle className="sm:text-xl text-ellipsis line-clamp-1 text-lg font-semibold capitalize">
+                            {expense.category.name}
+                          </CardTitle>
+                          <p className="text-xs text-ellipsis line-clamp-1 text-muted-foreground">
+                            {expense.description || "No description"}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex gap-1">
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 md:opacity-0 opacity-100 transition-opacity group-hover:opacity-100"
+                              onClick={() => handleEdit(expense)}
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Edit Expense</p>
+                          </TooltipContent>
+                        </Tooltip>
+                        <AlertDialog>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8 md:opacity-0 opacity-100 transition-opacity group-hover:opacity-100 hover:bg-destructive/10 hover:text-destructive"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Delete Expense</p>
+                            </TooltipContent>
+                          </Tooltip>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>
+                                Delete Expense
+                              </AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Are you sure you want to delete this expense
+                                from &quot;
+                                {expense.category.name}&quot;? This action
+                                cannot be undone.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => handleDelete(expense.id)}
+                              >
+                                Delete
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
                     </div>
-                    <Progress
-                      value={spentPercentage}
-                      className={cn(
-                        "h-2",
-                        isOverLimit ? "text-destructive" : "text-primary"
-                      )}
-                    />
-                  </div>
 
-                  <div className="grid grid-cols-3 gap-2">
-                    <div className="space-y-1">
-                      <span className="text-xs text-muted-foreground">
-                        Spent
-                      </span>
-                      <p
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-muted-foreground">
+                          Budget Impact
+                        </span>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Badge
+                              variant="secondary"
+                              className={cn(
+                                "flex items-center gap-1",
+                                isOverLimit ? "bg-danger" : ""
+                              )}
+                            >
+                              {isOverLimit ? (
+                                <AlertTriangle className="h-3 w-3" />
+                              ) : (
+                                <CheckCircle2 className="h-3 w-3" />
+                              )}
+                              {spentPercentage.toFixed(1)}%
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>
+                              {isOverLimit
+                                ? "Over budget limit"
+                                : "Within budget limit"}
+                             
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
+                      <Progress
+                        value={spentPercentage}
                         className={cn(
-                          "text-xl font-bold tabular-nums",
-                          isOverLimit && "text-red-500 dark:text-red-400"
+                          "h-2",
+                          isOverLimit ? "text-destructive" : "text-primary"
                         )}
-                      >
-                        {profile?.user.currencySymbol}
-                        {expense.amount}
-                      </p>
+                      />
                     </div>
-                    <div className="space-y-1">
-                      <span className="text-xs text-muted-foreground">
-                        Limit
-                      </span>
-                      <p className="text-xl font-semibold tabular-nums text-muted-foreground">
-                        {profile?.user.currencySymbol}
-                        {expense.category.limit}
-                      </p>
-                    </div>
-                    <div className="space-y-1">
-                      <span className="text-xs text-muted-foreground">
-                        Total Spent
-                      </span>
-                      <p
-                        className={cn(
-                          "text-xl font-bold tabular-nums",
-                          isOverLimit && "text-red-500 dark:text-red-400"
-                        )}
-                      >
-                        {profile?.user.currencySymbol}
-                        {expense.totalSpent}
-                      </p>
-                    </div>
-                  </div>
-                </CardHeader>
 
-                <CardFooter className="grid grid-cols-2 gap-1 border-t bg-muted/5 px-6 py-4">
-                  <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                    <Calendar className="h-3 w-3" />
-                    <span>Created {formatTimestamp(expense.createdAt)}</span>
-                  </div>
-                  <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                    <Clock className="h-3 w-3" />
-                    <span>
-                      Updated{" "}
-                      {formatTimestamp(expense.updatedAt || expense.createdAt)}
-                    </span>
-                  </div>
-                </CardFooter>
+                    <div className="grid grid-cols-4 gap-2">
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <div className="space-y-1">
+                            <span className="text-xs text-muted-foreground">
+                              Spent
+                            </span>
+
+                            <p
+                              className={cn(
+                                "text-lg font-bold tabular-nums",
+                                isOverLimit && "text-red-500 dark:text-red-400"
+                              )}
+                            >
+                              {profile?.user.currencySymbol}
+                              {expense.amount}
+                            </p>
+
+                            <TooltipContent>
+                              <p>Amount spent on this expense</p>
+                            </TooltipContent>
+                          </div>
+                        </TooltipTrigger>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <div className="space-y-1">
+                            <span className="text-xs text-muted-foreground">
+                              Limit
+                            </span>
+
+                            <p className="text-lg font-semibold tabular-nums text-muted-foreground">
+                              {profile?.user.currencySymbol}
+                              {expense.category.limit}
+                            </p>
+
+                            <TooltipContent>
+                              <p>Budget limit for this category</p>
+                            </TooltipContent>
+                          </div>
+                        </TooltipTrigger>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <div className="space-y-1">
+                            <span className="text-xs text-muted-foreground">
+                              T. Spent
+                            </span>
+                            <p
+                              className={cn(
+                                "text-lg font-bold tabular-nums",
+                                isOverLimit && "text-red-500 dark:text-red-400"
+                              )}
+                            >
+                              {profile?.user.currencySymbol}
+                              {expense.totalSpent}
+                            </p>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Total amount spent in this category</p>
+                        </TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <div className="space-y-1">
+                            <span className="text-xs text-muted-foreground">
+                              Remaining
+                            </span>
+                            <p
+                              className={cn(
+                                "text-lg font-bold tabular-nums",
+                                isOverLimit && "text-red-500 dark:text-red-400"
+                              )}
+                            >
+                              {profile?.user.currencySymbol}
+                              {expense.category.limit - expense.amount}
+                            </p>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Remaining budget for this category</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
+                  </CardHeader>
+
+                  <CardFooter className="grid grid-cols-2 gap-1 border-t bg-muted/5 px-6 py-4">
+                    <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                      <Calendar className="h-3 w-3" />
+                      <span>Created {formatTimestamp(expense.createdAt)}</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                      <Clock className="h-3 w-3" />
+                      <span>
+                        Updated{" "}
+                        {formatTimestamp(
+                          expense.updatedAt || expense.createdAt
+                        )}
+                      </span>
+                    </div>
+                  </CardFooter>
+                </TooltipProvider>
               </Card>
             );
           })
