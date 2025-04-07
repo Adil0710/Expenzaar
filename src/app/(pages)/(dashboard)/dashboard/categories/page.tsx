@@ -33,6 +33,12 @@ import { Pagination } from "@/components/pagination";
 import { useProfileStore } from "@/lib/store/profileStore";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function CategoriesPage() {
   const {
@@ -236,7 +242,7 @@ export default function CategoriesPage() {
                   : "Start by adding your first category"}
               </p>
               {searchTerm && (
-                <Button onClick={()=> setSearchTerm("")}>Clear Search</Button>
+                <Button onClick={() => setSearchTerm("")}>Clear Search</Button>
               )}
             </div>
           </>
@@ -279,23 +285,37 @@ export default function CategoriesPage() {
                       </CardTitle>
                     </div>
                     <div className="flex gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 opacity-100 sm:opacity-0 transition-opacity group-hover:opacity-100 cursor-pointer"
-                        onClick={() => handleEdit(category)}
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
+                      <Tooltip>
+                        <TooltipTrigger>
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8 opacity-100 sm:opacity-0 transition-opacity group-hover:opacity-100 hover:bg-destructive/10 dark:hover:bg-destructive/10 hover:text-destructive cursor-pointer"
+                            className="h-8 w-8 opacity-100 md:opacity-0 transition-opacity group-hover:opacity-100 cursor-pointer"
+                            onClick={() => handleEdit(category)}
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Pencil className="h-4 w-4" />
                           </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Edit Category</p>
+                        </TooltipContent>
+                      </Tooltip>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 opacity-100 md:opacity-0 transition-opacity group-hover:opacity-100 hover:bg-destructive/10 dark:hover:bg-destructive/10 hover:text-destructive cursor-pointer"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Delete Category</p>
+                            </TooltipContent>
+                          </Tooltip>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
@@ -324,20 +344,31 @@ export default function CategoriesPage() {
                       <span className="text-sm text-muted-foreground">
                         Budget Usage
                       </span>
-                      <Badge
-                        variant="secondary"
-                        className={cn(
-                          "flex items-center gap-1",
-                          isOverBudget ? "bg-danger" : ""
-                        )}
-                      >
-                        {isOverBudget ? (
-                          <Icons.AlertTriangle className="h-3 w-3" />
-                        ) : (
-                          <Icons.CheckCircle2 className="h-3 w-3" />
-                        )}
-                        {spentPercentage.toFixed(1)}%
-                      </Badge>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Badge
+                            variant="secondary"
+                            className={cn(
+                              "flex items-center gap-1",
+                              isOverBudget ? "bg-danger" : ""
+                            )}
+                          >
+                            {isOverBudget ? (
+                              <Icons.AlertTriangle className="h-3 w-3" />
+                            ) : (
+                              <Icons.CheckCircle2 className="h-3 w-3" />
+                            )}
+                            {spentPercentage.toFixed(1)}%
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>
+                            {isOverBudget
+                              ? "Over budget limit"
+                              : "Within budget limit"}
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
                     </div>
                     <Progress
                       value={spentPercentage}
@@ -349,28 +380,43 @@ export default function CategoriesPage() {
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                      <span className="text-sm text-muted-foreground">
-                        Limit
-                      </span>
-                      <p className="text-xl font-semibold tabular-nums">
-                        {profile?.user.currencySymbol}
-                        {category.limit}
-                      </p>
+                    <div className="space-y-1">
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <span className="text-sm text-muted-foreground">
+                            Limit
+                          </span>
+                          <p className="text-xl font-semibold tabular-nums">
+                            {profile?.user.currencySymbol}
+                            {category.limit}
+                          </p>
+                          <TooltipContent>
+                            <p>Monthly limit for this category</p>
+                          </TooltipContent>
+                        </TooltipTrigger>
+                      </Tooltip>
                     </div>
-                    <div className="space-y-1.5">
-                      <span className="text-sm text-muted-foreground">
-                        Remaining
-                      </span>
-                      <p
-                        className={cn(
-                          "text-xl font-semibold tabular-nums",
-                          isOverBudget ? "text-destructive" : "text-primary"
-                        )}
-                      >
-                        {profile?.user.currencySymbol}
-                        {category.remaining}
-                      </p>
+
+                    <div className="space-y-1">
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <span className="text-sm text-muted-foreground">
+                            Remaining
+                          </span>
+                          <TooltipContent>
+                            <p>Remaining budget for this category</p>
+                          </TooltipContent>
+                          <p
+                            className={cn(
+                              "text-xl font-semibold tabular-nums",
+                              isOverBudget ? "text-destructive" : "text-primary"
+                            )}
+                          >
+                            {profile?.user.currencySymbol}
+                            {category.remaining}
+                          </p>
+                        </TooltipTrigger>
+                      </Tooltip>
                     </div>
                   </div>
                 </CardHeader>
