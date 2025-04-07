@@ -30,7 +30,7 @@ export function Pagination({
           onValueChange={(value) => onPageSizeChange(Number.parseInt(value))}
           disabled={isLoading}
         >
-          <SelectTrigger className="h-8 w-[70px]">
+          <SelectTrigger className="h-8 w-[70px] cursor-pointer">
             <SelectValue placeholder={pageSize} />
           </SelectTrigger>
           <SelectContent>
@@ -45,7 +45,7 @@ export function Pagination({
         <Button
           variant="outline"
           size="icon"
-          className="h-8 w-8"
+          className="h-8 w-8 cursor-pointer"
           onClick={() => onPageChange(1)}
           disabled={currentPage === 1 || isLoading}
         >
@@ -55,7 +55,7 @@ export function Pagination({
         <Button
           variant="outline"
           size="icon"
-          className="h-8 w-8"
+          className="h-8 w-8 cursor-pointer"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1 || isLoading}
         >
@@ -70,7 +70,7 @@ export function Pagination({
         <Button
           variant="outline"
           size="icon"
-          className="h-8 w-8"
+          className="h-8 w-8 cursor-pointer"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages || totalPages === 0 || isLoading}
         >
@@ -80,7 +80,7 @@ export function Pagination({
         <Button
           variant="outline"
           size="icon"
-          className="h-8 w-8"
+          className="h-8 w-8 cursor-pointer"
           onClick={() => onPageChange(totalPages)}
           disabled={currentPage === totalPages || totalPages === 0 || isLoading}
         >

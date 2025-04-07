@@ -267,6 +267,7 @@ export default function CategoriesPage() {
                 key={category.id}
                 className="@container/card max-w-sm group relative overflow-hidden transition-all duration-300 hover:shadow-lg"
               >
+                <TooltipProvider>
                 <div className="absolute inset-0 opacity-10 transition-opacity" />
                 <CardHeader className="relative space-y-4">
                   <div className="flex items-center justify-between">
@@ -431,6 +432,7 @@ export default function CategoriesPage() {
                     <span>Updated {formatTimestamp(category.updatedAt)}</span>
                   </div>
                 </CardFooter>
+                </TooltipProvider>
               </Card>
             );
           })
