@@ -35,10 +35,14 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import LoaderLine from "@/components/loaderline";
-import { emailSchema, otpSchema, passwordSchema } from "@/schemas/forgotPasswordSchema";
+import {
+  emailSchema,
+  otpSchema,
+  passwordSchema,
+} from "@/schemas/forgotPasswordSchema";
 import PasswordIcon from "@/components/SVG/password";
-
-
+import axios from "axios";
+import Link from "next/link";
 
 // Animation variants
 const fadeVariants = {
@@ -75,6 +79,7 @@ export default function ForgotPassword() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { toast } = useToast();
   const isMobile = useIsMobile();
+  const [error, setError] = useState<string | null>("");
 
   // Email form
   const emailForm = useForm<z.infer<typeof emailSchema>>({
@@ -106,20 +111,32 @@ export default function ForgotPassword() {
     setLoading(true);
 
     try {
-      // Simulate API call to check if email exists
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const res = await axios.post("/api/auth/forgot-password", {
+        email: data.email,
+      });
 
       // Store email for later steps
       setEmail(data.email);
 
-      // Move to next step
-      setStep(2);
+      if (!res.data.success) {
+        toast({
+          title: "Error",
+          description: "Failed to send OTP. Please try again.",
+          variant: "destructive",
+        });
+        setError(res.data.message);
+        return;
+      }
 
-      toast({
-        title: "Email verified",
-        description: "We've sent a 6-digit code to your email",
-      });
+      if (res.data.success) {
+        toast({
+          title: "OTP Sent",
+          description: "We've sent a 6-digit code to your email",
+        });
+        setStep(2);
+      }
     } catch (error) {
+      console.log(error);
       toast({
         title: "Error",
         description: "Failed to verify email. Please try again.",
@@ -266,9 +283,7 @@ export default function ForgotPassword() {
                             opacity: isActive ? 1 : 0.7,
                             y: isActive ? 0 : 2,
                           }}
-                        >
-                       
-                        </motion.span>
+                        ></motion.span>
                       </div>
                     );
                   })}
@@ -277,443 +292,474 @@ export default function ForgotPassword() {
 
               <div className="flex-1 flex items-center justify-center dark:bg-neutral-950 ">
                 <AnimatePresence mode="wait">
-                  {step === 1 && (
+                  {error ? (
                     <motion.div
                       key="email-step"
                       variants={fadeVariants}
                       initial="hidden"
                       animate="visible"
                       exit="exit"
+                      className=" p-5 w-full text-center"
                     >
-                      <Form {...emailForm}>
-                        <form
-                          className="p-5 dark:bg-neutral-950 bg-white h-full"
-                          onSubmit={emailForm.handleSubmit(onSubmitEmail)}
-                        >
-                          <div className="flex flex-col gap-6">
-                            <motion.div
-                              className="flex flex-col items-center text-center"
-                              variants={formItemVariants}
-                              initial="hidden"
-                              animate="visible"
-                              custom={0}
-                            >
-                              <h1 className="text-2xl font-bold">
-                                Forgot Password
-                              </h1>
-                              <p className="text-balance text-muted-foreground mt-2 text-sm">
-                                Enter your email to reset your password
-                              </p>
-                            </motion.div>
-
-                            <motion.div
-                              className="grid gap-2"
-                              variants={formItemVariants}
-                              initial="hidden"
-                              animate="visible"
-                              custom={1}
-                            >
-                              <FormField
-                                control={emailForm.control}
-                                name="email"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Email</FormLabel>
-                                    <FormControl>
-                                      <Input
-                                        type="email"
-                                      
-                                        placeholder="m@example.com"
-                                        {...field}
-                                        onChange={(e) =>
-                                          field.onChange(
-                                            e.target.value.toLowerCase()
-                                          )
-                                        }
-                                      />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                            </motion.div>
-
-                            <motion.div
-                              variants={formItemVariants}
-                              initial="hidden"
-                              animate="visible"
-                              custom={2}
-                            >
-                              <Button
-                                type="submit"
-                                className="w-full cursor-pointer [&_svg:not([class*='size-'])]:size-12"
-                                disabled={loading}
-                              >
-                                {loading ? <LoaderLine /> : "Next"}
-                              </Button>
-                            </motion.div>
-
-                            <motion.div
-                              className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center "
-                              variants={formItemVariants}
-                              initial="hidden"
-                              animate="visible"
-                              custom={3}
-                            >
-                            
-                            </motion.div>
-                            <div className=""></div>
-                          </div>
-                        </form>
-                      </Form>
-                    </motion.div>
-                  )}
-
-                  {step === 2 && (
-                    <motion.div
-                      key="otp-step"
-                      variants={fadeVariants}
-                      initial="hidden"
-                      animate="visible"
-                      exit="exit"
-                    >
-                      <Form {...otpForm}>
-                        <form
-                          className="p-5 dark:bg-neutral-950 bg-white"
-                          onSubmit={otpForm.handleSubmit(onSubmitOTP)}
-                        >
-                          <div className="flex flex-col gap-6">
-                            <motion.div
-                              className="flex flex-col items-center text-center"
-                              variants={formItemVariants}
-                              initial="hidden"
-                              animate="visible"
-                              custom={0}
-                            >
-                              <h1 className="text-2xl font-bold">
-                                Verification Code
-                              </h1>
-                              <p className="text-balance text-muted-foreground mt-2 text-sm">
-                                We've sent a 6-digit code to {email}
-                              </p>
-                            </motion.div>
-
-                            <motion.div
-                              className="grid gap-2"
-                              variants={formItemVariants}
-                              initial="hidden"
-                              animate="visible"
-                              custom={1}
-                            >
-                              <FormField
-                                control={otpForm.control}
-                                name="otp"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Enter 6-digit code</FormLabel>
-                                    <FormControl>
-                                      <InputOTP maxLength={6} {...field}>
-                                        <InputOTPGroup>
-                                          <InputOTPSlot index={0}  />
-                                          <InputOTPSlot index={1} />
-                                          <InputOTPSlot index={2} />
-                                          <InputOTPSlot index={3} />
-                                          <InputOTPSlot index={4} />
-                                          <InputOTPSlot index={5} />
-                                        </InputOTPGroup>
-                                      </InputOTP>
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                            </motion.div>
-
-                            <motion.div
-                              variants={formItemVariants}
-                              initial="hidden"
-                              animate="visible"
-                              custom={2}
-                            >
-                              <Button
-                                type="submit"
-                                className="w-full cursor-pointer [&_svg:not([class*='size-'])]:size-12"
-                                disabled={loading}
-                              >
-                                {loading ? <LoaderLine /> : "Verify Code"}
-                              </Button>
-                            </motion.div>
-
-                            <motion.div
-                              variants={formItemVariants}
-                              initial="hidden"
-                              animate="visible"
-                              custom={3}
-                              className="flex flex-col gap-2"
-                            >
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                className="text-xs"
-                                onClick={() => setStep(1)}
-                                disabled={loading}
-                              >
-                                Back to email
-                              </Button>
-
-                              <Button
-                                type="button"
-                                variant="link"
-                                className="text-xs text-muted-foreground"
-                                disabled={loading}
-                              >
-                                Didn't receive a code? Resend
-                              </Button>
-                            </motion.div>
-                          </div>
-                        </form>
-                      </Form>
-                    </motion.div>
-                  )}
-
-                  {step === 3 && (
-                    <motion.div
-                      key="password-step"
-                      variants={fadeVariants}
-                      initial="hidden"
-                      animate="visible"
-                      exit="exit"
-                    >
-                      <Form {...passwordForm}>
-                        <form
-                          className="p-6 md:p-8 dark:bg-neutral-950 bg-white"
-                          onSubmit={passwordForm.handleSubmit(onSubmitPassword)}
-                        >
-                          <div className="flex flex-col gap-6">
-                            <motion.div
-                              className="flex flex-col items-center text-center"
-                              variants={formItemVariants}
-                              initial="hidden"
-                              animate="visible"
-                              custom={0}
-                            >
-                              <h1 className="text-2xl font-bold">
-                                Reset Password
-                              </h1>
-                              <p className="text-balance text-muted-foreground mt-2 text-sm">
-                                Create a new password for your account
-                              </p>
-                            </motion.div>
-
-                            <motion.div
-                              className="grid gap-2"
-                              variants={formItemVariants}
-                              initial="hidden"
-                              animate="visible"
-                              custom={1}
-                            >
-                              <FormField
-                                control={passwordForm.control}
-                                name="password"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>New Password</FormLabel>
-                                    <div className="relative">
-                                      <FormControl>
-                                        <Input
-                                          type={
-                                            showPassword ? "text" : "password"
-                                          }
-                                          placeholder="••••••••"
-                                          {...field}
-                                          className="mb-2"
-                                        />
-                                      </FormControl>
-                                      <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        className="absolute right-2 top-1/2 transform -translate-y-1/2 h-7 w-7"
-                                        onClick={() =>
-                                          setShowPassword(!showPassword)
-                                        }
-                                        type="button"
-                                      >
-                                        {showPassword ? (
-                                          <EyeOffIcon className="h-4 w-4" />
-                                        ) : (
-                                          <EyeIcon className="h-4 w-4" />
-                                        )}
-                                        <span className="sr-only">
-                                          Toggle password visibility
-                                        </span>
-                                      </Button>
-                                    </div>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                            </motion.div>
-
-                            <motion.div
-                              className="grid gap-2"
-                              variants={formItemVariants}
-                              initial="hidden"
-                              animate="visible"
-                              custom={2}
-                            >
-                              <FormField
-                                control={passwordForm.control}
-                                name="confirmPassword"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Confirm Password</FormLabel>
-                                    <div className="relative">
-                                      <FormControl>
-                                        <Input
-                                          type={
-                                            showConfirmPassword
-                                              ? "text"
-                                              : "password"
-                                          }
-                                          placeholder="••••••••"
-                                          {...field}
-                                          className="mb-2"
-                                        />
-                                      </FormControl>
-                                      <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        className="absolute right-2 top-1/2 transform -translate-y-1/2 h-7 w-7"
-                                        onClick={() =>
-                                          setShowConfirmPassword(
-                                            !showConfirmPassword
-                                          )
-                                        }
-                                        type="button"
-                                      >
-                                        {showConfirmPassword ? (
-                                          <EyeOffIcon className="h-4 w-4" />
-                                        ) : (
-                                          <EyeIcon className="h-4 w-4" />
-                                        )}
-                                        <span className="sr-only">
-                                          Toggle password visibility
-                                        </span>
-                                      </Button>
-                                    </div>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                            </motion.div>
-
-                            <motion.div
-                              variants={formItemVariants}
-                              initial="hidden"
-                              animate="visible"
-                              custom={3}
-                            >
-                              <Button
-                                type="submit"
-                                className="w-full cursor-pointer [&_svg:not([class*='size-'])]:size-12"
-                                disabled={loading}
-                              >
-                                {loading ? <LoaderLine /> : "Reset Password"}
-                              </Button>
-                            </motion.div>
-
-                            <motion.div
-                              variants={formItemVariants}
-                              initial="hidden"
-                              animate="visible"
-                              custom={4}
-                            >
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                className="w-full text-xs"
-                                onClick={() => setStep(2)}
-                                disabled={loading}
-                              >
-                                Back to verification
-                              </Button>
-                            </motion.div>
-                          </div>
-                        </form>
-                      </Form>
-                    </motion.div>
-                  )}
-
-                  {step === 4 && (
-                    <motion.div
-                      key="success-step"
-                      variants={fadeVariants}
-                      initial="hidden"
-                      animate="visible"
-                      exit="exit"
-                    >
-                      <div className="p-6 md:p-8 dark:bg-neutral-950 bg-white">
-                        <div className="flex flex-col gap-6">
-                          <motion.div
-                            className="flex flex-col items-center text-center"
-                            initial={{ scale: 0.8, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            transition={{
-                              type: "spring",
-                              stiffness: 300,
-                              damping: 20,
-                              delay: 0.2,
-                            }}
-                          >
-                            <motion.div
-                              className="mb-4 rounded-full bg-green-100 p-4 dark:bg-green-900"
-                              initial={{ scale: 0 }}
-                              animate={{ scale: 1 }}
-                              transition={{
-                                type: "spring",
-                                stiffness: 300,
-                                damping: 20,
-                                delay: 0.4,
-                              }}
-                            >
-                              <CheckCircle2 className="h-10 w-10 text-green-600 dark:text-green-400" />
-                            </motion.div>
-                            <h1 className="text-2xl font-bold">
-                              Password Reset Successful
-                            </h1>
-                            <p className="text-balance text-muted-foreground mt-2 text-sm">
-                              Your password has been reset successfully. You can
-                              now log in with your new password.
-                            </p>
-                          </motion.div>
-
-                          <motion.div
-                            variants={formItemVariants}
-                            initial="hidden"
-                            animate="visible"
-                            custom={1}
-                          >
-                            <Button
-                              type="button"
-                              className="w-full cursor-pointer"
-                              onClick={() => router.push("/login")}
-                            >
-                              Go to Login
-                            </Button>
-                          </motion.div>
-                        </div>
+                      <span className=" text-muted-foreground text-center text-balance text-sm ">
+                        {error}
+                      </span>
+                      <div className=" flex flex-row justify-center items-center gap-4 mt-5">
+                        <Link href={"/signin"}>
+                          <Button>Sign in</Button>
+                        </Link>
+                        <Link href={"/signup"}>
+                          <Button variant="secondary">Sign up</Button>
+                        </Link>
                       </div>
                     </motion.div>
+                  ) : (
+                    <>
+                      {step === 1 && (
+                        <motion.div
+                          key="email-step"
+                          variants={fadeVariants}
+                          initial="hidden"
+                          animate="visible"
+                          exit="exit"
+                        >
+                          <Form {...emailForm}>
+                            <form
+                              className="p-5 dark:bg-neutral-950 bg-white h-full"
+                              onSubmit={emailForm.handleSubmit(onSubmitEmail)}
+                            >
+                              <div className="flex flex-col gap-6">
+                                <motion.div
+                                  className="flex flex-col items-center text-center"
+                                  variants={formItemVariants}
+                                  initial="hidden"
+                                  animate="visible"
+                                  custom={0}
+                                >
+                                  <h1 className="text-2xl font-bold">
+                                    Forgot Password
+                                  </h1>
+                                  <p className="text-balance text-muted-foreground mt-2 text-sm">
+                                    Enter your email to reset your password
+                                  </p>
+                                </motion.div>
+
+                                <motion.div
+                                  className="grid gap-2"
+                                  variants={formItemVariants}
+                                  initial="hidden"
+                                  animate="visible"
+                                  custom={1}
+                                >
+                                  <FormField
+                                    control={emailForm.control}
+                                    name="email"
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel>Email</FormLabel>
+                                        <FormControl>
+                                          <Input
+                                            type="email"
+                                            placeholder="m@example.com"
+                                            {...field}
+                                            onChange={(e) =>
+                                              field.onChange(
+                                                e.target.value.toLowerCase()
+                                              )
+                                            }
+                                          />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                </motion.div>
+
+                                <motion.div
+                                  variants={formItemVariants}
+                                  initial="hidden"
+                                  animate="visible"
+                                  custom={2}
+                                >
+                                  <Button
+                                    type="submit"
+                                    className="w-full cursor-pointer [&_svg:not([class*='size-'])]:size-12"
+                                    disabled={loading}
+                                  >
+                                    {loading ? <LoaderLine /> : "Next"}
+                                  </Button>
+                                </motion.div>
+
+                                <motion.div
+                                  className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center "
+                                  variants={formItemVariants}
+                                  initial="hidden"
+                                  animate="visible"
+                                  custom={3}
+                                ></motion.div>
+                                <div className=""></div>
+                              </div>
+                            </form>
+                          </Form>
+                        </motion.div>
+                      )}
+
+                      {step === 2 && (
+                        <motion.div
+                          key="otp-step"
+                          variants={fadeVariants}
+                          initial="hidden"
+                          animate="visible"
+                          exit="exit"
+                        >
+                          <Form {...otpForm}>
+                            <form
+                              className="p-5 dark:bg-neutral-950 bg-white"
+                              onSubmit={otpForm.handleSubmit(onSubmitOTP)}
+                            >
+                              <div className="flex flex-col gap-6">
+                                <motion.div
+                                  className="flex flex-col items-center text-center"
+                                  variants={formItemVariants}
+                                  initial="hidden"
+                                  animate="visible"
+                                  custom={0}
+                                >
+                                  <h1 className="text-2xl font-bold">
+                                    Verification Code
+                                  </h1>
+                                  <p className="text-balance text-muted-foreground mt-2 text-sm">
+                                    We've sent a 6-digit code to {email}
+                                  </p>
+                                </motion.div>
+
+                                <motion.div
+                                  className="grid gap-2"
+                                  variants={formItemVariants}
+                                  initial="hidden"
+                                  animate="visible"
+                                  custom={1}
+                                >
+                                  <FormField
+                                    control={otpForm.control}
+                                    name="otp"
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel>
+                                          Enter 6-digit code
+                                        </FormLabel>
+                                        <FormControl>
+                                          <InputOTP maxLength={6} {...field}>
+                                            <InputOTPGroup>
+                                              <InputOTPSlot index={0} />
+                                              <InputOTPSlot index={1} />
+                                              <InputOTPSlot index={2} />
+                                              <InputOTPSlot index={3} />
+                                              <InputOTPSlot index={4} />
+                                              <InputOTPSlot index={5} />
+                                            </InputOTPGroup>
+                                          </InputOTP>
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                </motion.div>
+
+                                <motion.div
+                                  variants={formItemVariants}
+                                  initial="hidden"
+                                  animate="visible"
+                                  custom={2}
+                                >
+                                  <Button
+                                    type="submit"
+                                    className="w-full cursor-pointer [&_svg:not([class*='size-'])]:size-12"
+                                    disabled={loading}
+                                  >
+                                    {loading ? <LoaderLine /> : "Verify Code"}
+                                  </Button>
+                                </motion.div>
+
+                                <motion.div
+                                  variants={formItemVariants}
+                                  initial="hidden"
+                                  animate="visible"
+                                  custom={3}
+                                  className="flex flex-col gap-2"
+                                >
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    className="text-xs"
+                                    onClick={() => setStep(1)}
+                                    disabled={loading}
+                                  >
+                                    Back to email
+                                  </Button>
+
+                                  <Button
+                                    type="button"
+                                    variant="link"
+                                    className="text-xs text-muted-foreground"
+                                    disabled={loading}
+                                  >
+                                    Didn't receive a code? Resend
+                                  </Button>
+                                </motion.div>
+                              </div>
+                            </form>
+                          </Form>
+                        </motion.div>
+                      )}
+
+                      {step === 3 && (
+                        <motion.div
+                          key="password-step"
+                          variants={fadeVariants}
+                          initial="hidden"
+                          animate="visible"
+                          exit="exit"
+                        >
+                          <Form {...passwordForm}>
+                            <form
+                              className="p-6 md:p-8 dark:bg-neutral-950 bg-white"
+                              onSubmit={passwordForm.handleSubmit(
+                                onSubmitPassword
+                              )}
+                            >
+                              <div className="flex flex-col gap-6">
+                                <motion.div
+                                  className="flex flex-col items-center text-center"
+                                  variants={formItemVariants}
+                                  initial="hidden"
+                                  animate="visible"
+                                  custom={0}
+                                >
+                                  <h1 className="text-2xl font-bold">
+                                    Reset Password
+                                  </h1>
+                                  <p className="text-balance text-muted-foreground mt-2 text-sm">
+                                    Create a new password for your account
+                                  </p>
+                                </motion.div>
+
+                                <motion.div
+                                  className="grid gap-2"
+                                  variants={formItemVariants}
+                                  initial="hidden"
+                                  animate="visible"
+                                  custom={1}
+                                >
+                                  <FormField
+                                    control={passwordForm.control}
+                                    name="password"
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel>New Password</FormLabel>
+                                        <div className="relative">
+                                          <FormControl>
+                                            <Input
+                                              type={
+                                                showPassword
+                                                  ? "text"
+                                                  : "password"
+                                              }
+                                              placeholder="••••••••"
+                                              {...field}
+                                              className="mb-2"
+                                            />
+                                          </FormControl>
+                                          <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="absolute right-2 top-1/2 transform -translate-y-1/2 h-7 w-7"
+                                            onClick={() =>
+                                              setShowPassword(!showPassword)
+                                            }
+                                            type="button"
+                                          >
+                                            {showPassword ? (
+                                              <EyeOffIcon className="h-4 w-4" />
+                                            ) : (
+                                              <EyeIcon className="h-4 w-4" />
+                                            )}
+                                            <span className="sr-only">
+                                              Toggle password visibility
+                                            </span>
+                                          </Button>
+                                        </div>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                </motion.div>
+
+                                <motion.div
+                                  className="grid gap-2"
+                                  variants={formItemVariants}
+                                  initial="hidden"
+                                  animate="visible"
+                                  custom={2}
+                                >
+                                  <FormField
+                                    control={passwordForm.control}
+                                    name="confirmPassword"
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel>Confirm Password</FormLabel>
+                                        <div className="relative">
+                                          <FormControl>
+                                            <Input
+                                              type={
+                                                showConfirmPassword
+                                                  ? "text"
+                                                  : "password"
+                                              }
+                                              placeholder="••••••••"
+                                              {...field}
+                                              className="mb-2"
+                                            />
+                                          </FormControl>
+                                          <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="absolute right-2 top-1/2 transform -translate-y-1/2 h-7 w-7"
+                                            onClick={() =>
+                                              setShowConfirmPassword(
+                                                !showConfirmPassword
+                                              )
+                                            }
+                                            type="button"
+                                          >
+                                            {showConfirmPassword ? (
+                                              <EyeOffIcon className="h-4 w-4" />
+                                            ) : (
+                                              <EyeIcon className="h-4 w-4" />
+                                            )}
+                                            <span className="sr-only">
+                                              Toggle password visibility
+                                            </span>
+                                          </Button>
+                                        </div>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                </motion.div>
+
+                                <motion.div
+                                  variants={formItemVariants}
+                                  initial="hidden"
+                                  animate="visible"
+                                  custom={3}
+                                >
+                                  <Button
+                                    type="submit"
+                                    className="w-full cursor-pointer [&_svg:not([class*='size-'])]:size-12"
+                                    disabled={loading}
+                                  >
+                                    {loading ? (
+                                      <LoaderLine />
+                                    ) : (
+                                      "Reset Password"
+                                    )}
+                                  </Button>
+                                </motion.div>
+
+                                <motion.div
+                                  variants={formItemVariants}
+                                  initial="hidden"
+                                  animate="visible"
+                                  custom={4}
+                                >
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    className="w-full text-xs"
+                                    onClick={() => setStep(2)}
+                                    disabled={loading}
+                                  >
+                                    Back to verification
+                                  </Button>
+                                </motion.div>
+                              </div>
+                            </form>
+                          </Form>
+                        </motion.div>
+                      )}
+
+                      {step === 4 && (
+                        <motion.div
+                          key="success-step"
+                          variants={fadeVariants}
+                          initial="hidden"
+                          animate="visible"
+                          exit="exit"
+                        >
+                          <div className="p-6 md:p-8 dark:bg-neutral-950 bg-white">
+                            <div className="flex flex-col gap-6">
+                              <motion.div
+                                className="flex flex-col items-center text-center"
+                                initial={{ scale: 0.8, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                transition={{
+                                  type: "spring",
+                                  stiffness: 300,
+                                  damping: 20,
+                                  delay: 0.2,
+                                }}
+                              >
+                                <motion.div
+                                  className="mb-4 rounded-full bg-green-100 p-4 dark:bg-green-900"
+                                  initial={{ scale: 0 }}
+                                  animate={{ scale: 1 }}
+                                  transition={{
+                                    type: "spring",
+                                    stiffness: 300,
+                                    damping: 20,
+                                    delay: 0.4,
+                                  }}
+                                >
+                                  <CheckCircle2 className="h-10 w-10 text-green-600 dark:text-green-400" />
+                                </motion.div>
+                                <h1 className="text-2xl font-bold">
+                                  Password Reset Successful
+                                </h1>
+                                <p className="text-balance text-muted-foreground mt-2 text-sm">
+                                  Your password has been reset successfully. You
+                                  can now log in with your new password.
+                                </p>
+                              </motion.div>
+
+                              <motion.div
+                                variants={formItemVariants}
+                                initial="hidden"
+                                animate="visible"
+                                custom={1}
+                              >
+                                <Button
+                                  type="button"
+                                  className="w-full cursor-pointer"
+                                  onClick={() => router.push("/login")}
+                                >
+                                  Go to Login
+                                </Button>
+                              </motion.div>
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </>
                   )}
                 </AnimatePresence>
               </div>
 
               <div className="relative hidden bg-neutral-50 dark:bg-neutral-300 md:flex md:justify-center md:items-center">
-               <PasswordIcon/>
+                <PasswordIcon />
               </div>
             </div>
           </Card>
-         
         </div>
       </div>
     </div>

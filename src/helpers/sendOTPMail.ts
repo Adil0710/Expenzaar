@@ -1,7 +1,7 @@
-import nodemailer from 'nodemailer';
+import nodemailer from "nodemailer";
 
-import { ApiResponse } from '@/types/ApiResponse';
-import OTPMail from '@/emails/OTPMail';
+import { ApiResponse } from "@/types/ApiResponse";
+import OTPMail from "@/emails/OTPMail";
 
 // Create a reusable transporter object using the default SMTP transport
 const transporter = nodemailer.createTransport({
@@ -21,20 +21,19 @@ export async function sendOTPMail(
 ): Promise<ApiResponse> {
   try {
     // Convert the JSX to a string (HTML) using ReactDOMServer
-   
 
     // Send email using the transporter
     const info = await transporter.sendMail({
-      from: '"ProfileCraft" <padil2246@gmail.com>', // Change this to your verified email
+      from: '"Expenzaar" <padil2246@gmail.com>', // Change this to your verified email
       to: email, // Recipient email
-      subject: 'ProfileCraft | Verification Code', // Subject line
-      html: OTPMail({name, verifyCode}), // HTML body content (as a string)
+      subject: "Expenzaar | OTP for Password Reset", // Subject line
+      html: OTPMail({ name, verifyCode }), // HTML body content (as a string)
     });
 
-    console.log('Message sent: %s', info.messageId, info); // Access the messageId properly
-    return { success: true, message: 'Verification email sent successfully' };
+    console.log("Message sent: %s", info.messageId, info); // Access the messageId properly
+    return { success: true, message: "Verification email sent successfully" };
   } catch (error) {
-    console.error('Error sending verification email', error);
-    return { success: false, message: 'Failed to send verification email' };
+    console.error("Error sending verification email", error);
+    return { success: false, message: "Failed to send verification email" };
   }
 }

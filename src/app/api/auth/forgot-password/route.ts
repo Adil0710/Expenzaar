@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
-import { send } from "process";
 import { sendOTPMail } from "@/helpers/sendOTPMail";
 
 export async function POST(req: NextRequest) {
@@ -9,7 +8,7 @@ export async function POST(req: NextRequest) {
     const { email } = await req.json();
     if (!email) {
       return NextResponse.json(
-        { message: "Email is required" },
+        { message: "Email is required", success: false },
         { status: 400 }
       );
     }
@@ -20,7 +19,7 @@ export async function POST(req: NextRequest) {
 
     if (!existingUser) {
       return NextResponse.json(
-        { message: "User not found with this email. Please Signup." },
+        { message: "User not found with this email. Please Signup.", success: false },
         { status: 400 }
       );
     }
@@ -29,7 +28,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           message:
-            "You have signed up using Google. Please use Google to login.",
+            "You have signed up using Google. Please use Google to login.", success: false
         },
         { status: 400 }
       );
@@ -51,13 +50,13 @@ export async function POST(req: NextRequest) {
 
     if (!sendOTPMailResponse.success) {
       return NextResponse.json(
-        { message: "Failed to send OTP email" },
+        { message: "Failed to send OTP email", success: false },
         { status: 500 }
       );
     }
 
     return NextResponse.json(
-      { message: "OTP sent successfully" },
+      { message: "OTP sent successfully", success: true },
       { status: 200 }
     );
   } catch (error) {

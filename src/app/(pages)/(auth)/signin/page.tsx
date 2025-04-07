@@ -166,7 +166,15 @@ export default function SignInPage() {
                         name="password"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Password</FormLabel>
+                            <div className="flex items-center">
+                              <FormLabel>Password</FormLabel>
+                              <Link
+                                href="/forgot-password"
+                                className="ml-auto text-sm underline-offset-2 font-light hover:underline"
+                              >
+                                Forgot your password?
+                              </Link>
+                            </div>
                             <div className="relative">
                               <FormControl>
                                 <Input
