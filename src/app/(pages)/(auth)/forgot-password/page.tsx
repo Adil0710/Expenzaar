@@ -2,7 +2,7 @@
 
 import  ForgotPasswordForm  from "@/components/forgot-password-form"
 import { useSearchParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 
 export default function ForgotPasswordPage() {
   const searchParams = useSearchParams()
@@ -33,8 +33,10 @@ export default function ForgotPasswordPage() {
   }, [searchParams])
 
   return (
+    <Suspense>
     <div className="flex min-h-svh flex-col items-center justify-center dark:bg-black bg-neutral-100 p-6 md:p-10">
       <ForgotPasswordForm initialStep={initialStep} initialEmail={email} initialOtp={otp} />
     </div>
+    </Suspense>
   )
 }
