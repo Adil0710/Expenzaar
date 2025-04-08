@@ -12,17 +12,35 @@ export default function ForgotPasswordClient() {
   const [otp, setOtp] = useState<string>("");
 
   useEffect(() => {
+    // Check if there are query parameters to determine the step
     const emailParam = searchParams.get("email");
     const otpParam = searchParams.get("otp");
     const stepParam = searchParams.get("step");
 
-    if (emailParam) setEmail(emailParam);
-    if (otpParam) setOtp(otpParam);
+    if (emailParam) {
+      setEmail(emailParam);
+    }
+
+    if (otpParam) {
+      setOtp(otpParam);
+    }
+
     if (stepParam) {
       const step = Number.parseInt(stepParam, 10);
       if (!isNaN(step) && step >= 1 && step <= 4) {
         setInitialStep(step);
       }
+    }
+
+    // Ensure URL reflects current state even after refresh
+    if (stepParam || emailParam || otpParam) {
+      // This ensures the URL parameters are preserved after the component mounts
+      const params = new URLSearchParams(window.location.search);
+      window.history.replaceState(
+        {},
+        "",
+        `${window.location.pathname}?${params.toString()}`
+      );
     }
   }, [searchParams]);
 

@@ -13,6 +13,7 @@ import {
   KeyRound,
   Lock,
   CheckCircle2,
+  ArrowRight,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
@@ -117,21 +118,48 @@ export default function ForgotPasswordForm({
     },
   });
 
-  // Update URL with current step and email
   useEffect(() => {
-    // Initialize from props when component mounts
+    // Always initialize from props when component mounts or props change
     if (initialStep > 1) {
       setStep(initialStep);
     }
 
     if (initialEmail) {
       setEmail(initialEmail);
+      emailForm.setValue("email", initialEmail);
     }
 
     if (initialOtp) {
       setOtpValue(initialOtp);
+      otpForm.setValue("otp", initialOtp);
     }
   }, [initialStep, initialEmail, initialOtp]);
+
+  // Add this useEffect to update the URL when the step changes
+  // This ensures the URL always reflects the current state
+
+  // Add this after the existing useEffect hooks:
+
+  useEffect(() => {
+    // Update URL with current step and email
+    if (step > 1 && email) {
+      const params = new URLSearchParams();
+      params.set("step", step.toString());
+      params.set("email", email);
+
+      if (otpValue && step >= 3) {
+        params.set("otp", otpValue);
+      }
+
+      // Update URL without refreshing the page
+      window.history.replaceState(
+        {},
+        "",
+        `${window.location.pathname}?${params.toString()}`
+      );
+    }
+  }, [step, email, otpValue]);
+
   // Handle email submission
   const onSubmitEmail = async (data: z.infer<typeof emailSchema>) => {
     setLoading(true);
@@ -416,17 +444,14 @@ export default function ForgotPasswordForm({
                       {error}
                     </span>
                     {error.includes("Please use Google to login") ? (
-                      <div className="flex flex-row justify-center items-center gap-4 mt-5">
-                        <Link href="/signin">
-                          <Button>Sign in</Button>
-                        </Link>
-                        <Link href="/signup">
-                          <Button variant="secondary">Sign up</Button>
-                        </Link>
-                      </div>
+                      <Link href="/signin" className=" w-full mt-5">
+                        <Button className=" w-full">Sign in</Button>
+                      </Link>
                     ) : error.includes("User not found with this email") ? (
-                      <Link href="/signup" className="mt-5">
-                        <Button variant="default">Sign up</Button>
+                      <Link href="/signup" className="mt-5 w-full">
+                        <Button variant="default" className=" w-full">
+                          Sign up
+                        </Button>
                       </Link>
                     ) : (
                       <Button
@@ -528,11 +553,35 @@ export default function ForgotPasswordForm({
                               >
                                 <Button
                                   type="submit"
-                                  className="w-full cursor-pointer [&_svg:not([class*='size-'])]:size-12"
+                                  className={cn("w-full cursor-pointer", loading && "[&_svg:not([class*='size-'])]:size-12")}
                                   disabled={loading}
                                 >
-                                  {loading ? <LoaderLine /> : "Next"}
+                                  {loading ? <LoaderLine /> : <>Next <ArrowRight size={15} /></>}
                                 </Button>
+                              </motion.div>
+                              <motion.div
+                                variants={formItemVariants}
+                                initial="hidden"
+                                animate="visible"
+                                custom={3}
+                                className="w-full flex justify-center items-center gap-2"
+                              >
+                                <Link href="/signin" className=" w-full">
+                                  <Button
+                                    variant="secondary"
+                                    className=" w-full"
+                                  >
+                                    Sign in
+                                  </Button>
+                                </Link>
+                                <Link href="/signup" className=" w-full">
+                                  <Button
+                                    variant="secondary"
+                                    className=" w-full"
+                                  >
+                                    Sign up
+                                  </Button>
+                                </Link>
                               </motion.div>
 
                               {error ===

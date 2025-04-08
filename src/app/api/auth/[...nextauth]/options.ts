@@ -31,9 +31,9 @@ export const authOptions: NextAuthOptions = {
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
+      authorize: async (credentials) => {
         if (!credentials?.email || !credentials?.password) {
-          return null;
+          throw new Error("Email and password are required.");
         }
 
         try {
@@ -41,16 +41,23 @@ export const authOptions: NextAuthOptions = {
             where: { email: credentials.email },
           });
 
-          if (!user || !user.password) {
-            throw new Error("Invalid email or password.");
+          if (!user) {
+            throw new Error("Email not found. Please Sign up");
+          }
+
+          if (!user.password) {
+            throw new Error(
+              "Password not set. Please use a different login method."
+            );
           }
 
           const passwordMatch = await bcrypt.compare(
             credentials.password,
             user.password
           );
+
           if (!passwordMatch) {
-            throw new Error("Invalid email or password.");
+            throw new Error("Incorrect password.");
           }
 
           return {
@@ -60,8 +67,8 @@ export const authOptions: NextAuthOptions = {
             googleAccount: user.googleAccount || false,
           };
         } catch (error) {
-          console.log(error);
-          throw new Error("Authentication failed.");
+          console.error("Auth error:", error);
+          throw error; // Let NextAuth pass the plain error message to the client
         }
       },
     }),
