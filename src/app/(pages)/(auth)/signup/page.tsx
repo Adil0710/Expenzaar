@@ -149,9 +149,7 @@ export default function SignInPage() {
                                 required
                                 placeholder="john doe"
                                 {...field}
-                                onChange={(e) =>
-                                  field.onChange(e.target.value.toLowerCase())
-                                }
+                               
                               />
                             </FormControl>
                             <FormMessage />

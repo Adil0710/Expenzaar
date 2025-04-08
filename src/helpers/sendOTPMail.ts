@@ -27,7 +27,7 @@ export async function sendOTPMail(
       from: '"Expenzaar" <padil2246@gmail.com>', // Change this to your verified email
       to: email, // Recipient email
       subject: "Expenzaar | OTP for Password Reset", // Subject line
-      html: OTPMail({ name, verifyCode }), // HTML body content (as a string)
+      html: OTPMail({ name, verifyCode, email }), // HTML body content (as a string)
     });
 
     console.log("Message sent: %s", info.messageId, info); // Access the messageId properly

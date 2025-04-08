@@ -1,9 +1,10 @@
 interface OTPMailProps {
   name: string;
   verifyCode: string;
+  email:string
 }
 
-export default function OTPMail({ name, verifyCode }: OTPMailProps) {
+export default function OTPMail({ name, verifyCode, email }: OTPMailProps) {
   return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html dir="ltr" lang="en">
   <head>
@@ -165,7 +166,7 @@ export default function OTPMail({ name, verifyCode }: OTPMailProps) {
             </p>
             <p style="text-align: center; margin-top: 40px">
               <a
-                href="https://expenzaar.vercel.app/verify/${verifyCode}"
+                href="http://localhost:3000/forgot-password?step=2&email=${encodeURIComponent(email)}"
                 style="
                   padding: 8px 12px;
                   background-color: #0a85ea;
