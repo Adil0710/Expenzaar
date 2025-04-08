@@ -166,7 +166,7 @@ export default function OTPMail({ name, verifyCode, email }: OTPMailProps) {
             </p>
             <p style="text-align: center; margin-top: 40px">
               <a
-                href="http://localhost:3000/forgot-password?step=2&email=${encodeURIComponent(email)}"
+                href="https://expenzaar.vercel.app/forgot-password?step=2&email=${encodeURIComponent(email)}"
                 style="
                   padding: 8px 12px;
                   background-color: #0a85ea;

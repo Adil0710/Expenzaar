@@ -161,6 +161,7 @@ export default function ForgotPasswordForm({
         description: "We've sent a 6-digit code to your email",
       });
       setStep(2);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error(error);
       const errorMessage =
@@ -209,6 +210,7 @@ export default function ForgotPasswordForm({
       });
 
       setStep(3);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error(error);
       const errorMessage =
@@ -251,6 +253,7 @@ export default function ForgotPasswordForm({
       });
 
       setStep(4);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error(error);
       const errorMessage =
@@ -290,6 +293,7 @@ export default function ForgotPasswordForm({
         title: "OTP Sent",
         description: "We've sent a new 6-digit code to your email",
       });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error(error);
       const errorMessage =
@@ -581,7 +585,7 @@ export default function ForgotPasswordForm({
                                   Verification Code
                                 </h1>
                                 <p className=" text-muted-foreground mt-2 text-sm">
-                                  We've sent a 6-digit code to {email}
+                                  We&apos;ve sent a 6-digit code to {email}
                                 </p>
                               </motion.div>
 
@@ -667,7 +671,7 @@ export default function ForgotPasswordForm({
                                   onClick={handleResendOTP}
                                   disabled={loading}
                                 >
-                                  Didn't receive a code? Resend
+                                  Didn&apos;t receive a code? Resend
                                 </Button>
                               </motion.div>
                             </div>
