@@ -6,6 +6,7 @@ export async function PUT(
   req: Request,
   { params }: { params: { id: string } }
 ) {
+  const resolvedParams = await params;
   try {
     const token = req.headers.get("authorization")?.split(" ")[1];
     if (!token)
@@ -22,7 +23,8 @@ export async function PUT(
       );
     }
 
-    const { id: expenseId } = params;
+    const resolvedParams = await params;
+    const expenseId = resolvedParams.id;
     if (!expenseId)
       return NextResponse.json(
         { success: false, message: "Expense ID is required" },
