@@ -26,18 +26,31 @@ export async function GET(req: Request) {
         id: true,
         name: true,
         limit: true,
+        expenses: {
+          where: {
+            createdAt: {
+              gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+            },
+          },
+          select: { amount: true },
+        },
       },
-      orderBy: { name: "asc" }, // Sorted by name for better UX
+      orderBy: { name: "asc" },
     });
-
-    if (!categories.length) {
-      return NextResponse.json(
-        { success: false, message: "No categories found" },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json({ success: true, categories }, { status: 200 });
+    
+    // Add remaining balance calculation
+    const updatedCategories = categories.map((category) => {
+      const totalSpent = category.expenses.reduce((sum, exp) => sum + exp.amount, 0);
+      const remaining = Math.max(category.limit - totalSpent, 0);
+    
+      return {
+        ...category,
+        remaining,
+      };
+    });
+    
+    return NextResponse.json({ success: true, categories: updatedCategories }, { status: 200 });
+    
   } catch (error) {
     console.error("Error fetching categories:", error);
     return NextResponse.json(

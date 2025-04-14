@@ -44,15 +44,19 @@ export async function POST(req: Request) {
     }
 
     const totalSpent = await prisma.expense.aggregate({
-      where: { categoryId, userId: decoded.id },
+      where: {
+        categoryId,
+        userId: decoded.id,
+        createdAt: {
+          gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1), // Filter for current month
+        },
+      },
       _sum: { amount: true },
     });
 
-    const categoryLimit = Number(category.limit);   // Type conversion
+    const categoryLimit = Number(category.limit); // Ensure type conversion
     const totalAmountSpent = Number(totalSpent._sum.amount) || 0;
     const amountToAdd = Number(amount);
-
- 
 
     const isOverLimit = categoryLimit
       ? totalAmountSpent + amountToAdd > categoryLimit
